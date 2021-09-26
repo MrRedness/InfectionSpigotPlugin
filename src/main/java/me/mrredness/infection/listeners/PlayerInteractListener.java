@@ -15,8 +15,10 @@ import java.util.Objects;
 
 public class PlayerInteractListener implements Listener {
 
-    boolean atLeastOneBorderPositionSet = false;
-    String eTitle;
+    static boolean atLeastOneBorderPositionSet = false;
+    static String eTitle;
+    static boolean readyForPlayerInputOnPhysicalBorder = false;
+    static Player setupUser;
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
@@ -78,7 +80,14 @@ public class PlayerInteractListener implements Listener {
                             DataHelper.addAndSave("Infection Border Range", range);
                             p.getInventory().remove(e.getItem());
                             atLeastOneBorderPositionSet = false;
+                            p.sendMessage(ChatColor.DARK_PURPLE + "Finally, choose if you would like to setup a physical border around the box you just set.");
+                            p.sendMessage(ChatColor.DARK_PURPLE + "This depends on the plugin \"World Border 1.15+\".");
+                            p.sendMessage(ChatColor.DARK_PURPLE + "Otherwise, the plugin will only teleport players around this border and assume that players cannot get out on their own.");
+                            p.sendMessage(ChatColor.DARK_AQUA + "If you would like this, please type \"Yes\". Otherwise, type \"No\" in the chat.");
+                            p.sendMessage(ChatColor.RED + "If no option is set, the plugin assumes that you would like this feature enabled.");
 
+                            readyForPlayerInputOnPhysicalBorder = true;
+                            setupUser = p;
                         }
                     }
                 }

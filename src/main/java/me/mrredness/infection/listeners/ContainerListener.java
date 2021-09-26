@@ -1,7 +1,9 @@
 package me.mrredness.infection.listeners;
 
+import me.mrredness.infection.BorderUtils;
 // import me.mrredness.infection.Infection;
 import me.mrredness.infection.TeleportUtils;
+import me.mrredness.infection.commands.DataHelper;
 import me.mrredness.infection.commands.MetaHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,6 +24,9 @@ public class ContainerListener implements Listener {
   //  public ContainerListener(Infection plugin) {
   //      this.plugin = plugin;
   //  }
+  static boolean readyForPlayerInputOnDisablingBorder = false;
+  static Player user;
+
     @EventHandler
     public void onMenuClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
@@ -59,7 +64,7 @@ public class ContainerListener implements Listener {
                     }
             }
                 else if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.BLUE + "Test Border")) {
-                    p.sendMessage("You will now be teleported a few times to a location inside the border you set. If you are teleported outside your set bounds, something is wrong.");
+                    p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
                     
                     for (int i = 0; i < 5; i++) {
                         p.teleport(TeleportUtils.findSafeLocation());
@@ -69,6 +74,14 @@ public class ContainerListener implements Listener {
                             ex.printStackTrace();
                         }
                     }
+                    if (DataHelper.check("Infection Physical Border", true)) {
+                        p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
+                        p.sendMessage(ChatColor.RED + "This will fail if the plugin \"World Border 1.15+\" is not installed.");
+                        BorderUtils.setBorder();
+                        p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
+                        user = p;
+                    }
+                    
             }
         }
     }
