@@ -74,7 +74,7 @@ public class PlayerInteractListener implements Listener {
                             p.sendMessage(ChatColor.GREEN + "The pos2 border location for infection has been set to " + ChatColor.RED + pos2Coords + ChatColor.GREEN + " in the " + ChatColor.RED + BorderWorld + ".");
                             DataHelper.addAndSave("Infection Border pos2 Coordinates", pos2Coords);
                             DataHelper.addAndSave("Infection Border pos2 Location", clickBlock);
-                            HashMap range = RangeHelper.createCoordinateRange(clickBlock,otherBorderBlock);
+                            HashMap<String, Integer> range = RangeHelper.createCoordinateRange(clickBlock,otherBorderBlock);
                             DataHelper.addAndSave("Infection Border Range", range);
                             p.getInventory().remove(e.getItem());
                             atLeastOneBorderPositionSet = false;

@@ -21,9 +21,14 @@ public class DataHelper {
     }
     public static HashMap<String, Integer> getHashMap(String key) {
         MemorySection mem = (MemorySection) InfectionSetupData.get().get(key);
-        Map<String, Object> map = Objects.requireNonNull(mem).getValues(false);
+      //  Map<String, Integer> map = (Map) Objects.requireNonNull(mem).getValues(false);
       //  Map<String, Integer> castedMap = (Map) map;
-        return new HashMap<String, Integer>((Map)map);
-
+        try {
+        return new HashMap<String, Integer>((Map) Objects.requireNonNull(mem).getValues(false));
+        }
+        catch (Exception e) {
+            return null;
+            
+        }
     }
 }
