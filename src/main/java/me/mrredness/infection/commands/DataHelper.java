@@ -2,8 +2,10 @@ package me.mrredness.infection.commands;
 
 import me.mrredness.infection.InfectionSetupData;
 import org.bukkit.configuration.MemorySection;
+//import org.bukkit.configuration.MemorySection;
 
 import java.util.HashMap;
+//import java.util.Map;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,15 +26,23 @@ public class DataHelper {
         return InfectionSetupData.get().get(key);
     }
     public static HashMap<String, Integer> getHashMap(String key) {
-        MemorySection mem = (MemorySection) InfectionSetupData.get().get(key);
-        Map<String, Integer> map = (Map) Objects.requireNonNull(mem).getValues(false);
-   //     Map<String, Integer> castedMap = (Map) map;
         try {
-        return new HashMap<String, Integer>((Map) map);
+            MemorySection mem = (MemorySection) InfectionSetupData.get().get(key);
+            Map<String, Integer> map = (Map) mem.getValues(false);
+            //  Map<String, Integer> castedMap = (Map) map;
+            HashMap<String, Integer> hashMap = (HashMap<String, Integer>) map;
+            return hashMap;
         }
         catch (Exception e) {
+            System.out.println("Something went wrong.");
             return null;
-            
         }
+
+       /* try {
+        return (HashMap) InfectionSetupData.get().get(key);
+    //    }
+    //    catch (Exception e) {
+    //        return null;
+     //   } */
     }
 }

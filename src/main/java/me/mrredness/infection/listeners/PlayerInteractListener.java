@@ -46,14 +46,16 @@ public class PlayerInteractListener implements Listener {
                     Location clickBlock = e.getClickedBlock().getLocation();
                     String pos1Coords = clickBlock.getBlockX() + ", " + clickBlock.getBlockY() + ", " + clickBlock.getBlockZ();
                     String BorderWorld = Objects.requireNonNull(clickBlock.getWorld()).getName();
-                    if (!DataHelper.check("Infection Border World", BorderWorld)) {
+                    if (!DataHelper.check("Infection Spawn World", BorderWorld)) {
                         p.sendMessage(ChatColor.RED + "The border must be in the same world as the spawn location.");
                     }
-                    p.sendMessage(ChatColor.GREEN + "The pos1 border location for infection has been set to " + ChatColor.RED + pos1Coords + ChatColor.GREEN + " in the " + ChatColor.RED + BorderWorld + ".");
-                    DataHelper.addAndSave("Infection Border pos1 Coordinates", pos1Coords);
-                    DataHelper.addAndSave("Infection Border pos1 Location", clickBlock);
-                    p.sendMessage(ChatColor.GOLD + "Go to the the other corner of your border and right click");
-                    atLeastOneBorderPositionSet = true;
+                    else {
+                        p.sendMessage(ChatColor.GREEN + "The pos1 border location for infection has been set to " + ChatColor.RED + pos1Coords + ChatColor.GREEN + " in the " + ChatColor.RED + BorderWorld + ".");
+                        DataHelper.addAndSave("Infection Border pos1 Coordinates", pos1Coords);
+                        DataHelper.addAndSave("Infection Border pos1 Location", clickBlock);
+                        p.sendMessage(ChatColor.GOLD + "Go to the the other corner of your border and right click");
+                        atLeastOneBorderPositionSet = true;
+                    }
                 }
             } else if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 if (eTitle.equals(ChatColor.GREEN + "Border Coordinate Picker")) {
@@ -82,7 +84,7 @@ public class PlayerInteractListener implements Listener {
                             atLeastOneBorderPositionSet = false;
                             p.sendMessage(ChatColor.DARK_PURPLE + "Finally, choose if you would like to setup a physical border around the box you just set.");
                             p.sendMessage(ChatColor.DARK_PURPLE + "This depends on the plugin \"World Border 1.15+\".");
-                            p.sendMessage(ChatColor.DARK_PURPLE + "Otherwise, the plugin will only teleport players around this border and assume that players cannot get out on their own.");
+                            p.sendMessage(ChatColor.DARK_PURPLE + "Otherwise, the plugin will only teleport players inside the border and assume that players cannot get out on their own.");
                             p.sendMessage(ChatColor.DARK_AQUA + "If you would like this, please type \"Yes\". Otherwise, type \"No\" in the chat.");
                             p.sendMessage(ChatColor.RED + "If no option is set, the plugin assumes that you would like this feature enabled.");
 

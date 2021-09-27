@@ -22,48 +22,30 @@ public class TeleportUtils {
         bad_blocks.add(Material.CACTUS);
     }
 
-    public static Location generateLocation(){
+    public static Location generateLocation(HashMap<String,Integer> range){
 
         //Generate Random Location
         Random random = new Random();
 
-        HashMap<String, Integer> range = DataHelper.getHashMap("Infection Border Range");
         int xCenter = range.get("xCenter");
-//debug        p.sendMessage("xCenter is " + xCenter);
         int zCenter = range.get("zCenter");
-//debug       p.sendMessage("zCenter is " + zCenter);
 
         int xAmp = range.get("xAmp");
-//debug        p.sendMessage("xAmp is " + xAmp);
         int zAmp = range.get("zAmp");
-//debug       p.sendMessage("zAmp is " + zAmp);
 
         int x = random.nextInt(xAmp);
-//debug        p.sendMessage("x is " + x);
         int z = random.nextInt(zAmp);
-//debug         p.sendMessage("z is " + z);
         int y = 150;
 
         if (random.nextBoolean()) {
             x = xCenter + x;
-//debug             p.sendMessage("New x is " + x);
-            if (random.nextBoolean()) {
-                z = zCenter + z;
-//debug                 p.sendMessage("New z is " + z);
-            } else {
-                z = zCenter - z;
-//debug                 p.sendMessage("New z is " + z);
-            }
         } else {
             x = xCenter - x;
-//debug             p.sendMessage("New x is " + x);
-            if (random.nextBoolean()) {
-                z = zCenter + z;
-//debug                 p.sendMessage("New z is " + z);
-            } else {
-                z = zCenter - z;
-//debug                 p.sendMessage("New z is " + z);
-            }
+        }
+        if (random.nextBoolean()) {
+            z = zCenter + z;
+        } else {
+            z = zCenter - z;
         }
 
 
@@ -73,14 +55,16 @@ public class TeleportUtils {
         return randomLocation;
     }
     public static Location findSafeLocation(){
-        Location randomLocation = generateLocation();
-        while (!isLocationSafe(randomLocation)){
+        Location spawn = (Location) DataHelper.get("Infection Spawn Location");
+        HashMap<String, Integer> range = DataHelper.getHashMap("Infection Border Range");
+        Location randomLocation = generateLocation(range);
+        while (!isLocationSafe(randomLocation, spawn, range)){
             //Keep looking for a safe location
-            randomLocation = generateLocation();
+            randomLocation = generateLocation(range);
         }
         return randomLocation;
     }
-    public static boolean isLocationSafe(Location location){
+    public static boolean isLocationSafe(Location location, Location spawn, HashMap<String, Integer> range){
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
@@ -90,6 +74,28 @@ public class TeleportUtils {
         Block below = Objects.requireNonNull(location.getWorld()).getBlockAt(x, y - 1, z);
         Block above = Objects.requireNonNull(location.getWorld()).getBlockAt(x, y + 1, z);
         //Check to see if the surroundings are safe or not
-        return !(bad_blocks.contains(below.getType())) || (block.getType().isSolid()) || (above.getType().isSolid());
+
+        //Check to see if location is far enough from spawn
+        int spawnX = spawn.getBlockX();
+        int spawnZ = spawn.getBlockZ();
+
+        double newXAmp = ((double) range.get("xAmp")) * .3;
+        double newZAmp = ((double) range.get("zAmp")) * .3;
+
+        boolean checkX = (Math.abs(x - spawnX) < newXAmp);
+        boolean checkZ = (Math.abs(z - spawnZ) < newZAmp);
+
+        boolean checkBelow = bad_blocks.contains(below.getType());
+        boolean checkBlock = block.getType().isSolid();
+        boolean checkAbove = (above.getType().isSolid());
+
+        System.out.println("check X" + checkX);
+        System.out.println("check Y" + checkZ);
+        System.out.println("checkBelow" + checkBelow);
+        System.out.println("checkBlock" + checkBlock);
+        System.out.println("checkAbove" + checkAbove);
+
+
+        return !(checkBelow || checkBlock || checkAbove || checkX || checkZ);
     }
 }

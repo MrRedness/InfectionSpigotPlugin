@@ -27,7 +27,7 @@ public class InfectionCommand implements CommandExecutor {
         if (sender instanceof Player p) {
             if(args.length == 0) {return false;}
             else if (args[0].equals("join")) {
-                Inventory joinMenu = Bukkit.createInventory(p, 9, "Join Infection!");
+            /*    Inventory joinMenu = Bukkit.createInventory(p, 9, "Join Infection!");
                 //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
                 ItemStack joinStack = new ItemStack(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")), 1);
                 ItemMeta joinStack_meta = joinStack.getItemMeta();
@@ -35,13 +35,17 @@ public class InfectionCommand implements CommandExecutor {
                 joinStack.setItemMeta(joinStack_meta);
                 joinMenu.addItem(joinStack);
                 p.openInventory(joinMenu);
+            */
+
+                // insert command to teleport to arena
+
                 return true;
             }
             else if (args[0].equals("setup")) {
                 Inventory setupMenu = Bukkit.createInventory(p, 9, "Setup Infection!");
                 //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
                 ItemStack setupSpawn = new ItemStack(Material.RED_BED, 1);
-                MetaHelper.setDisplayName(setupSpawn, ChatColor.GOLD + "Setup Spawn Coordinates");
+                MetaHelper.setDisplayName(setupSpawn, ChatColor.GOLD + "Setup Infected Spawn Coordinates");
                 ItemStack setupBorder = new ItemStack(Material.BARRIER, 1);
                 MetaHelper.setDisplayName(setupBorder, ChatColor.GREEN + "Setup Infection Border");
                 ItemStack testBorder = new ItemStack(Material.ENDER_PEARL);

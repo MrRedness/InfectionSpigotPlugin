@@ -1,7 +1,7 @@
 package me.mrredness.infection.listeners;
 
 import me.mrredness.infection.BorderUtils;
-// import me.mrredness.infection.Infection;
+import me.mrredness.infection.SleepUtils;
 import me.mrredness.infection.TeleportUtils;
 import me.mrredness.infection.commands.DataHelper;
 import me.mrredness.infection.commands.MetaHelper;
@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-import static java.lang.Thread.sleep;
 
 public class ContainerListener implements Listener {
   //  private final Infection plugin;
@@ -39,7 +38,7 @@ public class ContainerListener implements Listener {
         }
         else if (e.getView().getTitle().equals("Setup Infection!")) {
             e.setCancelled(true);
-            if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.GOLD + "Setup Spawn Coordinates")) {
+            if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.GOLD + "Setup Infected Spawn Coordinates")) {
                 Inventory pInv = p.getInventory();
                 ItemStack coordinatePicker = new ItemStack(Material.GOLDEN_AXE, 1);
                 MetaHelper.setDisplayName(coordinatePicker, ChatColor.DARK_AQUA + "Spawn Coordinate Picker");
@@ -47,7 +46,7 @@ public class ContainerListener implements Listener {
                     p.sendMessage("Please have at least one inventory slot open.");
                     p.closeInventory();
                 } else {
-                    p.sendMessage(ChatColor.GOLD + "Go to the coordinates you would like to use as spawn, then left click on the block directly beneath the spawn coords.");
+                    p.sendMessage(ChatColor.GOLD + "Go to the coordinates you would like to use as the spawn for the infected (uninfected will be randomly teleported around the border), then left click on the block directly beneath the spawn coords.");
                     p.closeInventory();
                 }
             }
@@ -64,22 +63,19 @@ public class ContainerListener implements Listener {
                     }
             }
                 else if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.BLUE + "Test Border")) {
-    /*                p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
+                    p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
                     
                     for (int i = 0; i < 5; i++) {
                         p.teleport(TeleportUtils.findSafeLocation());
-                        try {
-                            sleep(5000);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                        SleepUtils.three();
                     }
-   */                 if (DataHelper.checkBoolean("Infection Physical Border")) {
+                    if (DataHelper.checkBoolean("Infection Physical Border")) {
                         p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
                         p.sendMessage(ChatColor.RED + "This will fail if the plugin \"World Border 1.15+\" is not installed.");
                         BorderUtils.setBorder();
                         p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
                         user = p;
+                        readyForPlayerInputOnDisablingBorder = true;
                     }
                     
             }

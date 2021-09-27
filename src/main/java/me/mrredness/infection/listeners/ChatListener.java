@@ -17,15 +17,16 @@ public class ChatListener implements Listener {
         if (PlayerInteractListener.readyForPlayerInputOnPhysicalBorder) {
             Player p = e.getPlayer();
             String m = e.getMessage();
+            e.setCancelled(true);
             if (p.equals(PlayerInteractListener.setupUser)) {
                 if (m.equalsIgnoreCase("yes") || m.equalsIgnoreCase("y")) {
                     DataHelper.addAndSave("Infection Physical Border", true);
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
-                    p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete!");
+                    p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
                 } else if (m.equalsIgnoreCase("no") || m.equalsIgnoreCase("n")) {
                     DataHelper.addAndSave("Infection Physical Border", false);
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
-                    p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete!");
+                    p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
                 } else {
                     p.sendMessage(ChatColor.RED +"Please use either yes or no.");
                 }
@@ -35,6 +36,7 @@ public class ChatListener implements Listener {
         if (ContainerListener.readyForPlayerInputOnDisablingBorder) {
             Player p = e.getPlayer();
             String m = e.getMessage();
+            e.setCancelled(true);
             if (p.equals(ContainerListener.user)) {
                 if (m.equalsIgnoreCase("end") || m.equalsIgnoreCase("e")) {
                     ContainerListener.readyForPlayerInputOnDisablingBorder = false;
