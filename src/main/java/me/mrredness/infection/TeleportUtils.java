@@ -57,7 +57,8 @@ public class TeleportUtils {
     public static Location findSafeLocation(){
         Location spawn = (Location) DataHelper.get("Infection Spawn Location");
         HashMap<String, Integer> range = DataHelper.getHashMap("Infection Border Range");
-        Location randomLocation = generateLocation(range);
+        Location randomLocation = generateLocation(Objects.requireNonNull(range));
+
         while (!isLocationSafe(randomLocation, spawn, range)){
             //Keep looking for a safe location
             randomLocation = generateLocation(range);
@@ -89,12 +90,12 @@ public class TeleportUtils {
         boolean checkBlock = block.getType().isSolid();
         boolean checkAbove = (above.getType().isSolid());
 
-        System.out.println("check X" + checkX);
+       /* System.out.println("check X" + checkX);
         System.out.println("check Y" + checkZ);
         System.out.println("checkBelow" + checkBelow);
         System.out.println("checkBlock" + checkBlock);
         System.out.println("checkAbove" + checkAbove);
-
+*/
 
         return !(checkBelow || checkBlock || checkAbove || checkX || checkZ);
     }
