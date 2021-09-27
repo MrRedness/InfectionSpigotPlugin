@@ -16,15 +16,19 @@ public class DataHelper {
     public static boolean check(String key, Object value) {
             return Objects.equals(InfectionSetupData.get().getString(key), value);
     }
+    public static boolean checkBoolean(String key) {
+        return InfectionSetupData.get().getBoolean(key);
+    }
+
     public static Object get(String key) {
         return InfectionSetupData.get().get(key);
     }
     public static HashMap<String, Integer> getHashMap(String key) {
         MemorySection mem = (MemorySection) InfectionSetupData.get().get(key);
-      //  Map<String, Integer> map = (Map) Objects.requireNonNull(mem).getValues(false);
-      //  Map<String, Integer> castedMap = (Map) map;
+        Map<String, Integer> map = (Map) Objects.requireNonNull(mem).getValues(false);
+   //     Map<String, Integer> castedMap = (Map) map;
         try {
-        return new HashMap<String, Integer>((Map) Objects.requireNonNull(mem).getValues(false));
+        return new HashMap<String, Integer>((Map) map);
         }
         catch (Exception e) {
             return null;

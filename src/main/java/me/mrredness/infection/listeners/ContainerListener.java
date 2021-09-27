@@ -64,7 +64,7 @@ public class ContainerListener implements Listener {
                     }
             }
                 else if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.BLUE + "Test Border")) {
-                    p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
+    /*                p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
                     
                     for (int i = 0; i < 5; i++) {
                         p.teleport(TeleportUtils.findSafeLocation());
@@ -74,7 +74,7 @@ public class ContainerListener implements Listener {
                             ex.printStackTrace();
                         }
                     }
-                    if (DataHelper.check("Infection Physical Border", true)) {
+   */                 if (DataHelper.checkBoolean("Infection Physical Border")) {
                         p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
                         p.sendMessage(ChatColor.RED + "This will fail if the plugin \"World Border 1.15+\" is not installed.");
                         BorderUtils.setBorder();

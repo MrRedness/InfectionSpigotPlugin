@@ -2,6 +2,7 @@ package me.mrredness.infection;
 
 import me.mrredness.infection.commands.InfectionCommand;
 import me.mrredness.infection.commands.InfectionTabCompletion;
+import me.mrredness.infection.listeners.ChatListener;
 import me.mrredness.infection.listeners.ContainerListener;
 import me.mrredness.infection.listeners.PlayerInteractListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +31,7 @@ public final class Infection extends JavaPlugin {
         Objects.requireNonNull(getCommand("infection")).setTabCompleter(new InfectionTabCompletion());
         getServer().getPluginManager().registerEvents(new ContainerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
     @Override
     public void onDisable() {
