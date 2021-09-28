@@ -22,10 +22,12 @@ public class ChatListener implements Listener {
                 if (m.equalsIgnoreCase("yes") || m.equalsIgnoreCase("y")) {
                     DataHelper.addAndSave("Infection Physical Border", true);
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
+                    DataHelper.addAndSave("Infection Border Setup Complete", true);
                     p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
                 } else if (m.equalsIgnoreCase("no") || m.equalsIgnoreCase("n")) {
                     DataHelper.addAndSave("Infection Physical Border", false);
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
+                    DataHelper.addAndSave("Infection Border Setup Complete", true);
                     p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
                 } else {
                     p.sendMessage(ChatColor.RED +"Please use either yes or no.");

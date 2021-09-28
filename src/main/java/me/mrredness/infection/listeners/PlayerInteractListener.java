@@ -38,6 +38,7 @@ public class PlayerInteractListener implements Listener {
                     DataHelper.addAndSave("Infection Spawn Coordinates", SpawnCoords);
                     DataHelper.addAndSave("Infection Spawn World", SpawnWorld);
                     DataHelper.addAndSave("Infection Spawn Location", clickBlock);
+                    DataHelper.addAndSave("Infection Spawn Setup Complete", false);
                     p.getInventory().remove(e.getItem());
                 }
                 if (eTitle.equals(ChatColor.GREEN + "Border Coordinate Picker")) {

@@ -18,13 +18,19 @@ public class DataHelper {
     public static boolean check(String key, Object value) {
             return Objects.equals(InfectionSetupData.get().getString(key), value);
     }
+
     public static boolean checkBoolean(String key) {
         return InfectionSetupData.get().getBoolean(key);
+    }
+
+    public static boolean contains(String key) {
+        return InfectionSetupData.get().contains(key);
     }
 
     public static Object get(String key) {
         return InfectionSetupData.get().get(key);
     }
+
     public static HashMap<String, Integer> getHashMap(String key) {
         try {
             MemorySection mem = (MemorySection) InfectionSetupData.get().get(key);

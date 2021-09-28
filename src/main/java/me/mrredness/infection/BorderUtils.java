@@ -29,9 +29,11 @@ public class BorderUtils {
            return Config.Border(worldName);
        }
        public static void removeBorder() {
-           String worldName = (String) DataHelper.get("Infection Spawn World");
-           Config.removeBorder(worldName);
-           Config.updateMessage("&cYou have reached the edge of this world.");
+           if (DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
+               String worldName = (String) DataHelper.get("Infection Spawn World");
+               Config.removeBorder(worldName);
+               Config.updateMessage("&cYou have reached the edge of this world.");
+           }
        }
     
 }

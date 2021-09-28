@@ -47,10 +47,12 @@ public class ContainerListener implements Listener {
                     p.closeInventory();
                 } else {
                     p.sendMessage(ChatColor.GOLD + "Go to the coordinates you would like to use as the spawn for the infected (uninfected will be randomly teleported around the border), then left click on the block directly beneath the spawn coords.");
+                    DataHelper.addAndSave("Infection Spawn Setup Complete", false);
                     p.closeInventory();
                 }
             }
                 else if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.GREEN + "Setup Infection Border")) {
+
                     Inventory pInv = p.getInventory();
                     ItemStack coordinatePicker = new ItemStack(Material.WOODEN_AXE, 1);
                     MetaHelper.setDisplayName(coordinatePicker, ChatColor.GREEN + "Border Coordinate Picker");
@@ -59,25 +61,30 @@ public class ContainerListener implements Listener {
                         p.closeInventory();
                     } else {
                         p.sendMessage(ChatColor.GOLD + "Go to the first corner of your border and left click");
+                        DataHelper.addAndSave("Infection Border Setup Complete", false);
                         p.closeInventory();
                     }
             }
                 else if (Objects.requireNonNull(e.getCurrentItem().getItemMeta()).getDisplayName().equals(ChatColor.BLUE + "Test Border")) {
-                    p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
-                    
-                    for (int i = 0; i < 5; i++) {
-                        p.teleport(TeleportUtils.findSafeLocation());
-                        SleepUtils.three();
+                    if (DataHelper.checkBoolean("Infection Border Setup Complete") || DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
+                        p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
+
+                        for (int i = 0; i < 5; i++) {
+                            p.teleport(TeleportUtils.findSafeLocation());
+                            SleepUtils.three();
+                        }
+                        if (DataHelper.checkBoolean("Infection Physical Border")) {
+                            p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
+                            p.sendMessage(ChatColor.RED + "This will fail if the plugin \"World Border 1.15+\" is not installed.");
+                            BorderUtils.setBorder();
+                            p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
+                            user = p;
+                            readyForPlayerInputOnDisablingBorder = true;
+                        }
                     }
-                    if (DataHelper.checkBoolean("Infection Physical Border")) {
-                        p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
-                        p.sendMessage(ChatColor.RED + "This will fail if the plugin \"World Border 1.15+\" is not installed.");
-                        BorderUtils.setBorder();
-                        p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
-                        user = p;
-                        readyForPlayerInputOnDisablingBorder = true;
+                    else {
+                        p.sendMessage(ChatColor.RED + "Please finish setting up border and spawn first.");
                     }
-                    
             }
         }
     }
