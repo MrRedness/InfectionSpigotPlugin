@@ -40,7 +40,7 @@ public class DataHelper {
             return hashMap;
         }
         catch (Exception e) {
-            System.out.println("Something went wrong.");
+            System.out.println(e.getMessage());
             return null;
         }
 

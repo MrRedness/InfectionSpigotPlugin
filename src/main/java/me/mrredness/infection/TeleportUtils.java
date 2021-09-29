@@ -54,9 +54,8 @@ public class TeleportUtils {
         randomLocation.setY(y);
         return randomLocation;
     }
-    public static Location findSafeLocation(){
+    public static Location findSafeLocation(HashMap<String, Integer> range){
         Location spawn = (Location) DataHelper.get("Infection Spawn Location");
-        HashMap<String, Integer> range = DataHelper.getHashMap("Infection Border Range");
         Location randomLocation = generateLocation(Objects.requireNonNull(range));
 
         while (!isLocationSafe(randomLocation, spawn, range)){

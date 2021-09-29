@@ -16,7 +16,7 @@ public final class Infection extends JavaPlugin {
     public Logger logger = this.getLogger();
     LogRecord enable = new LogRecord(Level.INFO, "Infection successfully loaded! Have fun!");
     LogRecord disable = new LogRecord(Level.INFO, "Infection disabled.");
-
+    boolean worldBorderEnabled;
 
     @Override
     public void onEnable() {
@@ -27,17 +27,18 @@ public final class Infection extends JavaPlugin {
         InfectionSetupData.get().options().header("This file will be populated when /infection setup is run. Please do not manually edit this file unless you want to break things or it is absolutely necessary.");
         InfectionSetupData.get().options().copyDefaults(true);
         InfectionSetupData.save();
-        BorderUtils.removeBorder();
-        Objects.requireNonNull(getCommand("infection")).setExecutor(new InfectionCommand(this));
+        Objects.requireNonNull(getCommand("infection")).setExecutor(new InfectionCommand(this, worldBorderEnabled));
         Objects.requireNonNull(getCommand("infection")).setTabCompleter(new InfectionTabCompletion());
-        getServer().getPluginManager().registerEvents(new ContainerListener(), this);
+        worldBorderEnabled = getServer().getPluginManager().isPluginEnabled("WorldBorder");
+        if (worldBorderEnabled) {BorderUtils.removeBorder();}
+        getServer().getPluginManager().registerEvents(new ContainerListener(worldBorderEnabled), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
     }
     @Override
     public void onDisable() {
         logger.log(disable);
-        BorderUtils.removeBorder();
+        if (worldBorderEnabled) {BorderUtils.removeBorder();}
     }
 
 }

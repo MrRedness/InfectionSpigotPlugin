@@ -1,8 +1,10 @@
 package me.mrredness.infection.commands;
 
 import me.mrredness.infection.Infection;
+import me.mrredness.infection.LobbyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,17 +12,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 public class InfectionCommand implements CommandExecutor {
 
     private final Infection plugin;
+    private final boolean worldBorderEnabled;
 
-    public InfectionCommand(Infection plugin) {this.plugin = plugin;}
+    public InfectionCommand(Infection plugin, boolean worldBorderEnabled) {
+        this.plugin = plugin;
+        this.worldBorderEnabled = worldBorderEnabled;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -38,6 +42,21 @@ public class InfectionCommand implements CommandExecutor {
             */
 
                 // insert command to teleport to arena
+                if (!(DataHelper.checkBoolean("Infection Border Setup Complete") || DataHelper.checkBoolean("Infection Spawn Setup Complete") || DataHelper.checkBoolean("Infection Lobby Setup Complete") || DataHelper.checkBoolean("Infection Options Setup Complete"))) {
+                    p.sendMessage(ChatColor.RED + "Please finish setting up the border and spawn using the '/infection setup' menu.");
+                }
+                else if (!DataHelper.checkBoolean("Infection Border Setup Complete")) {
+                    p.sendMessage(ChatColor.RED + "Please finish setting up the border using the 'Setup Infection Border' item in the '/infection setup' menu.");
+                }
+                else if (!DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
+                    p.sendMessage(ChatColor.RED + "Please finish setting up the infected spawn location using the 'Setup Infected Spawn Coordinates' item in the '/infection setup' menu.");
+                }
+                else if (!DataHelper.checkBoolean("Infection Lobby Setup Complete")) {
+                    p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
+                }
+                else {
+                    LobbyUtils.joinLobby(p);
+                }
 
                 return true;
             }
@@ -50,7 +69,11 @@ public class InfectionCommand implements CommandExecutor {
                 MetaHelper.setDisplayName(setupBorder, ChatColor.GREEN + "Setup Infection Border");
                 ItemStack testBorder = new ItemStack(Material.ENDER_PEARL);
                 MetaHelper.setDisplayName(testBorder, ChatColor.BLUE + "Test Border");
-                setupMenu.addItem(setupSpawn, setupBorder, testBorder);
+                ItemStack setupLobby = new ItemStack(Material.CLOCK);
+                MetaHelper.setDisplayName(setupLobby, ChatColor.AQUA + "Setup Lobby");
+                ItemStack setOptions = new ItemStack(Material.WRITABLE_BOOK);
+                MetaHelper.setDisplayName(setOptions, ChatColor.DARK_PURPLE + "Set Options");
+                setupMenu.addItem(setupSpawn, setupBorder, testBorder, setupLobby, setOptions);
                 p.openInventory(setupMenu);
                 return true;
             }
