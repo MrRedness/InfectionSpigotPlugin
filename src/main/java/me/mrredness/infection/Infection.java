@@ -30,7 +30,8 @@ public final class Infection extends JavaPlugin {
         Objects.requireNonNull(getCommand("infection")).setExecutor(new InfectionCommand(this, worldBorderEnabled));
         Objects.requireNonNull(getCommand("infection")).setTabCompleter(new InfectionTabCompletion());
         worldBorderEnabled = getServer().getPluginManager().isPluginEnabled("WorldBorder");
-        if (worldBorderEnabled) {BorderUtils.removeBorder();}
+        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
+        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
         getServer().getPluginManager().registerEvents(new ContainerListener(worldBorderEnabled), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -38,7 +39,8 @@ public final class Infection extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.log(disable);
-        if (worldBorderEnabled) {BorderUtils.removeBorder();}
+        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
+        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
     }
 
 }

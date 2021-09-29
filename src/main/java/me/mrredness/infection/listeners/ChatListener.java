@@ -62,7 +62,7 @@ public class ChatListener implements Listener {
             if (p.equals(ContainerListener.user)) {
                 if (m.equalsIgnoreCase("end") || m.equalsIgnoreCase("e")) {
                     ContainerListener.readyForPlayerInputOnDisablingTestBorder = false;
-                    BorderUtils.removeBorder();
+                    BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");
                     p.sendMessage(ChatColor.GREEN + "Ok, border is down!");
                 }
 

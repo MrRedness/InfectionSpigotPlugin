@@ -95,7 +95,7 @@ public class ContainerListener implements Listener {
                         if (DataHelper.checkBoolean("Infection Physical Border")) {
                             p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
                             if (worldBorderEnabled) {
-                                BorderUtils.setBorder();
+                                BorderUtils.setBorder("Infection Border Range", "Infection Spawn World");
                                 p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
                                 user = p;
                                 readyForPlayerInputOnDisablingTestBorder = true;

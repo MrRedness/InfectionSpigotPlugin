@@ -20,6 +20,9 @@ public class InfectionGameUtils {
             p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
             playersInGame.add(p.getUniqueId());
             playerPreviousLocations.put(p.getUniqueId(), p.getLocation());
+            if (playersInGame.size() == 1) {
+                BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
+            }
         }
         else {
             p.sendMessage(ChatColor.RED + "You are already in a game.");
@@ -30,6 +33,12 @@ public class InfectionGameUtils {
             playersInGame.remove(p.getUniqueId());
             p.teleport(playerPreviousLocations.get(p.getUniqueId()));
             playerPreviousLocations.remove(p.getUniqueId());
+            if (playersInGame.size() == 0) {
+                BorderUtils.removeBorder("Infection Lobby Border Range", "Infection Lobby World");
+            }
+        }
+        else {
+            p.sendMessage(ChatColor.RED + "You are not currently in a game");
         }
     }
 }
