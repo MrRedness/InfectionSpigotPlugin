@@ -1,10 +1,9 @@
 package me.mrredness.infection.commands;
 
 import me.mrredness.infection.Infection;
-import me.mrredness.infection.LobbyUtils;
+import me.mrredness.infection.InfectionGameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,7 +54,7 @@ public class InfectionCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
                 }
                 else {
-                    LobbyUtils.joinLobby(p);
+                    InfectionGameUtils.joinGame(p);
                 }
 
                 return true;
