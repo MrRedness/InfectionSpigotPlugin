@@ -14,7 +14,7 @@ public class InfectionTabCompletion implements TabCompleter {
         if (args.length == 1){
             List<String> options = new ArrayList<>();
             options.add("join");
-            options.remove("leave");
+            options.add("leave");
             options.add("setup");
             return options;
         }

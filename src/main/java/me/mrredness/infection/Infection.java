@@ -5,8 +5,11 @@ import me.mrredness.infection.commands.InfectionTabCompletion;
 import me.mrredness.infection.listeners.ChatListener;
 import me.mrredness.infection.listeners.ContainerListener;
 import me.mrredness.infection.listeners.PlayerInteractListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -41,6 +44,8 @@ public final class Infection extends JavaPlugin {
         logger.log(disable);
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
+        BarCountdown.removeAll();
+        Bukkit.getServer().getScheduler().cancelTasks(this);
     }
 
 }

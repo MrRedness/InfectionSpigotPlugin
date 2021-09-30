@@ -7,4 +7,4 @@ softdepend: [WorldBorder]
 commands:
   infection:
     description: 'Join a round of infection or setup the plugin for first use.'
-    usage: "Usage: /<command> [join|setup]"
+    usage: "Usage: /<command> [join|leave|setup]"

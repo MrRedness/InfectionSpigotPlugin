@@ -39,7 +39,7 @@ public class InfectionCommand implements CommandExecutor {
                 joinMenu.addItem(joinStack);
                 p.openInventory(joinMenu);
             */
-                if (!p.hasPermission("infection.joinGame")) {
+                if (p.hasPermission("infection.joinGame")) {
                     if (!(DataHelper.checkBoolean("Infection Border Setup Complete") || DataHelper.checkBoolean("Infection Spawn Setup Complete") || DataHelper.checkBoolean("Infection Lobby Setup Complete") || DataHelper.checkBoolean("Infection Options Setup Complete"))) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the border and spawn using the '/infection setup' menu.");
                     } else if (!DataHelper.checkBoolean("Infection Border Setup Complete")) {
@@ -49,21 +49,26 @@ public class InfectionCommand implements CommandExecutor {
                     } else if (!DataHelper.checkBoolean("Infection Lobby Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
                     } else {
-                        InfectionGameUtils.joinGame(p);
+                        InfectionGameUtils.joinGame(p, worldBorderEnabled, plugin);
                     }
+                    return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.joinGame\"");
+                    return false;
                 }
+
             }
             else if (args[0].equals("leave")) {
-                if (!p.hasPermission("infection.joinGame")) {
+                if (p.hasPermission("infection.joinGame")) {
                     InfectionGameUtils.leaveGame(p);
+                    return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.joinGame\"");
+                    return false;
                 }
             }
             else if (args[0].equals("setup")) {
-                if (!p.hasPermission("infection.setup")) {
+                if (p.hasPermission("infection.setup")) {
                     Inventory setupMenu = Bukkit.createInventory(p, 9, "Setup Infection!");
                     //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
                     ItemStack setupSpawn = new ItemStack(Material.RED_BED, 1);
@@ -78,11 +83,11 @@ public class InfectionCommand implements CommandExecutor {
                     MetaHelper.setDisplayName(setOptions, ChatColor.DARK_PURPLE + "Set Options");
                     setupMenu.addItem(setupSpawn, setupBorder, testBorder, setupLobby, setOptions);
                     p.openInventory(setupMenu);
+                    return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.setup\"");
+                    return false;
                 }
-
-                return true;
             }
             else {return false;}
         } else {

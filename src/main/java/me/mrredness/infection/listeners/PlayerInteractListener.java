@@ -138,7 +138,7 @@ public class PlayerInteractListener implements Listener {
                     if (!atLeastOneLobbyBorderPositionSet) {
                         p.sendMessage(ChatColor.RED + "Set position 1 first by left clicking on the desired block.");
                     } else {
-                        Location clickBlock = e.getClickedBlock().getLocation();
+                        Location clickBlock = e.getClickedBlock().getLocation().add(0, 1, 0);
                         String BorderWorld = Objects.requireNonNull(clickBlock.getWorld()).getName();
                         Location otherBorderBlock = (Location) DataHelper.get("Infection Lobby Border pos1 Location");
                         Location spawnBlock = (Location) DataHelper.get("Infection Lobby Spawn Location");

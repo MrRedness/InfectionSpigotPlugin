@@ -122,23 +122,36 @@ public class ContainerListener implements Listener {
             }
             else if (MetaHelper.checkDisplayName(i,ChatColor.DARK_PURPLE + "Set Options")) {
                 e.setCancelled(true);
+                DataHelper.addIfDoesNotExist("Min Number of Players", 2);
+                DataHelper.addIfDoesNotExist("Max Number of Players", 10);
+                DataHelper.addIfDoesNotExist("Allow Choice of Role", true);
+
                 Inventory optionsMenu = Bukkit.createInventory(p, 9, ChatColor.DARK_PURPLE + "Set Infection Options!");
-                //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
-                ItemStack minNumberOfPlayers = new ItemStack(Material.WRITABLE_BOOK, 2);
-                MetaHelper.setDisplayName(minNumberOfPlayers, ChatColor.GOLD + "Minimum Number of Players " + ChatColor.AQUA + "(left click to decrease, right click to increase)");
-                ItemStack maxNumberOfPlayers = new ItemStack(Material.WRITABLE_BOOK, 4);
-                MetaHelper.setDisplayName(maxNumberOfPlayers, ChatColor.GOLD + "Maximum Number of Players " + ChatColor.AQUA + "(left click to decrease, right click to increase)");
+                ItemStack minNumberOfPlayers = new ItemStack(Material.WRITABLE_BOOK, (Integer) DataHelper.get("Min Number of Players"));
+                MetaHelper.setDisplayName(minNumberOfPlayers, ChatColor.GOLD + "Minimum Number of Players");
+                MetaHelper.setLore(minNumberOfPlayers, ChatColor.AQUA + "(left click to decrease, right click to increase)");
+                ItemStack maxNumberOfPlayers = new ItemStack(Material.WRITABLE_BOOK, (Integer) DataHelper.get("Max Number of Players"));
+                MetaHelper.setDisplayName(maxNumberOfPlayers, ChatColor.GOLD + "Maximum Number of Players");
+                MetaHelper.setLore(maxNumberOfPlayers, ChatColor.AQUA + "(left click to decrease, right click to increase)");
                 ItemStack allowChoice = new ItemStack(Material.WRITABLE_BOOK, 1);
-                MetaHelper.setDisplayName(allowChoice, ChatColor.GOLD + "Allow players to choose their role (infected or hider)?" + ChatColor.GREEN + "(left click for no and right click for yes)");
-                MetaHelper.setLore(allowChoice,ChatColor.RED + "Currently Set to No");
+                MetaHelper.setDisplayName(allowChoice, ChatColor.GOLD + "Allow players to choose their role (infected or hider)?");
+                if (DataHelper.checkBoolean("Allow Choice of Role")) {
+                    MetaHelper.setLore(allowChoice,ChatColor.GREEN + "Currently Set to Yes");
+                } else {
+                    MetaHelper.setLore(allowChoice, ChatColor.RED + "Currently Set to No");
+                }
+                ItemStack save = new ItemStack(Material.LEVER, 1);
+                MetaHelper.setDisplayName(save, ChatColor.GOLD + "Click to save!");
+                MetaHelper.setLore(save, ChatColor.BLUE + "You can still change these options later.");
                 optionsMenu.addItem(minNumberOfPlayers, maxNumberOfPlayers, allowChoice);
+                optionsMenu.setItem(8, save);
                 p.openInventory(optionsMenu);
             }
         }
         else if (e.getView().getTitle().equals(ChatColor.DARK_PURPLE + "Set Infection Options!")) {
             e.setCancelled(true);
             ItemStack i = e.getCurrentItem();
-            if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Minimum Number of Players " + ChatColor.AQUA + "(left click to decrease, right click to increase)")) {
+            if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Minimum Number of Players")) {
                 int amount = i.getAmount();
                 int amountOfMax =  Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount();
                 if (amount > 2 && e.getClick().isLeftClick()) {
@@ -147,8 +160,9 @@ public class ContainerListener implements Listener {
                 else if (amount < amountOfMax && e.getClick().isRightClick()) {
                     i.setAmount(amount + 1);
                 }
+                DataHelper.addAndSave("Min Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount());
             }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Maximum Number of Players " + ChatColor.AQUA + "(left click to decrease, right click to increase)")) {
+            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Maximum Number of Players")) {
                 int amount = i.getAmount();
                 int amountOfMin =  Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount();
                 if (amount > amountOfMin && e.getClick().isLeftClick()) {
@@ -157,14 +171,22 @@ public class ContainerListener implements Listener {
                 else if (amount < 20 && e.getClick().isRightClick()) {
                     i.setAmount(amount + 1);
                 }
+                DataHelper.addAndSave("Max Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount());
             }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Allow players to choose their role (infected or hider)?" + ChatColor.GREEN + "(left click for no and right click for yes)")) {
+            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Allow players to choose their role (infected or hider)?")) {
                 if (MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No")) {
                     MetaHelper.setLore(i,ChatColor.GREEN + "Currently Set to Yes");
                 }
                 else {
                     MetaHelper.setLore(i,ChatColor.RED + "Currently Set to No");
                 }
+                DataHelper.addAndSave("Allow Choice of Role", !MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No"));
+            }
+            else if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Click to save!")) {
+                DataHelper.addAndSave("Min Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount());
+                DataHelper.addAndSave("Max Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount());
+                DataHelper.addAndSave("Allow Choice of Role", !MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No"));
+                p.closeInventory();
             }
         }
     }

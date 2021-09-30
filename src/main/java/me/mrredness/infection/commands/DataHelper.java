@@ -15,6 +15,11 @@ public class DataHelper {
         InfectionSetupData.get().set(key,value);
         InfectionSetupData.save();
     }
+    public static void addIfDoesNotExist(String key, Object value) {
+        if (!contains(key)) {
+            addAndSave(key, value);
+        }
+    }
     public static boolean check(String key, Object value) {
             return Objects.equals(InfectionSetupData.get().getString(key), value);
     }

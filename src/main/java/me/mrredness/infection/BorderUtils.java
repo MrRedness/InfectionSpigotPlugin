@@ -7,6 +7,7 @@ import com.wimbli.WorldBorder.Config;
 //import org.bukkit.WorldBorder;
 
 import me.mrredness.infection.commands.DataHelper;
+import org.bukkit.Bukkit;
 
 //import org.bukkit.World;
 
