@@ -143,13 +143,20 @@ public class InfectionGameUtils {
                 becomeInfected(p);
             }
             else if (chosenHider.contains(p.getUniqueId())) {
-
+                becomeHider(p);
+            }
+            else if (new Random().nextBoolean()) {
+                becomeInfected(p);
+            }
+            else {
+                becomeHider(p);
             }
         }
     }
 
     public static void becomeInfected(Player p) {
         p.teleport((Location) DataHelper.get("Infection Spawn Location"));
+        p.setDisplayName(ChatColor.RED + p.getDisplayName());
     }
 
     public static void becomeHider(Player p) {
