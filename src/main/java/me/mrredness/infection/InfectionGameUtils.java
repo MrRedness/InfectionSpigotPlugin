@@ -139,7 +139,21 @@ public class InfectionGameUtils {
         lobbyStage = false;
         for (Player p : playersInGame) {
             p.sendMessage("Game has started");
+            if (chosenInfected.contains(p.getUniqueId())) {
+                becomeInfected(p);
+            }
+            else if (chosenHider.contains(p.getUniqueId())) {
+
+            }
         }
+    }
+
+    public static void becomeInfected(Player p) {
+        p.teleport((Location) DataHelper.get("Infection Spawn Location"));
+    }
+
+    public static void becomeHider(Player p) {
+        p.teleport(TeleportUtils.findSafeLocation(DataHelper.getHashMap("Infection Border Range")));
     }
 
     /*
