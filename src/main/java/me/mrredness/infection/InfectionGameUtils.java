@@ -2,6 +2,7 @@ package me.mrredness.infection;
 
 import me.mrredness.infection.commands.DataHelper;
 import me.mrredness.infection.commands.MetaHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -61,6 +62,9 @@ public class InfectionGameUtils {
     }
     public static void removeFromRandom(Player p) {InfectionGameUtils.chosenRandom.remove(p.getUniqueId());}
 
+    private static ItemStack[] infectedInv;
+    private static ItemStack[] hiderInv;
+
 
     public static void joinGame(Player p, boolean worldBorderEnabled, Infection plugin) {
         if (!playersInGame.contains(p)) {
@@ -111,6 +115,7 @@ public class InfectionGameUtils {
             playerPreviousLocation.remove(p.getUniqueId());
             p.getInventory().clear();
             p.getInventory().setContents(playerPreviousInventory.get(p.getUniqueId()));
+            p.setDisplayName(p.getName());
             playerPreviousInventory.remove(p.getUniqueId());
             BarCountdown.removePlayer(p);
             p.sendMessage(ChatColor.GREEN + "Bye! Play again soon!");
@@ -157,10 +162,15 @@ public class InfectionGameUtils {
     public static void becomeInfected(Player p) {
         p.teleport((Location) DataHelper.get("Infection Spawn Location"));
         p.setDisplayName(ChatColor.RED + p.getDisplayName());
+        p.getInventory().clear();
+        p.getInventory().setContents(infectedInv);
     }
 
     public static void becomeHider(Player p) {
         p.teleport(TeleportUtils.findSafeLocation(DataHelper.getHashMap("Infection Border Range")));
+        p.setDisplayName(ChatColor.AQUA + p.getDisplayName());
+        p.getInventory().clear();
+        p.getInventory().setContents(hiderInv);
     }
 
     /*
