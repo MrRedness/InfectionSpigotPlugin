@@ -5,11 +5,11 @@ import me.mrredness.infection.commands.InfectionTabCompletion;
 import me.mrredness.infection.listeners.ChatListener;
 import me.mrredness.infection.listeners.ContainerListener;
 import me.mrredness.infection.listeners.PlayerInteractListener;
+import me.mrredness.infection.listeners.PlayerQuitListener;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -38,14 +38,18 @@ public final class Infection extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ContainerListener(worldBorderEnabled), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
     }
     @Override
     public void onDisable() {
-        logger.log(disable);
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
         BarCountdown.removeAll();
         Bukkit.getServer().getScheduler().cancelTasks(this);
+        for (Player p : InfectionGameUtils.getPlayersInGame()) {
+            InfectionGameUtils.leaveGame(p);
+        }
+        logger.log(disable);
     }
 
 }

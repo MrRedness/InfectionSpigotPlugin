@@ -1,6 +1,7 @@
 package me.mrredness.infection.listeners;
 
 import me.mrredness.infection.BorderUtils;
+import me.mrredness.infection.InfectionGameUtils;
 import me.mrredness.infection.SleepUtils;
 import me.mrredness.infection.TeleportUtils;
 import me.mrredness.infection.commands.DataHelper;
@@ -41,7 +42,37 @@ public class ContainerListener implements Listener {
                 p.sendMessage("You have joined Infection!");
             }
         }
-     */   else if (e.getView().getTitle().equals("Setup Infection!")) {
+     */
+        else if (e.getView().getTitle().equals(ChatColor.AQUA + "Choose your role in Infection!")) {
+            e.setCancelled(true);
+            ItemStack i = e.getCurrentItem();
+            double minNumberOfPlayers = (double) InfectionGameUtils.getMinNumberOfPlayers();
+            if (MetaHelper.checkDisplayName(i, ChatColor.RED + "Infected")) {
+                if ((InfectionGameUtils.getChosenInfected().size() / minNumberOfPlayers) <= 0.5 ) {
+                    InfectionGameUtils.addToInfected(p);
+                    p.closeInventory();
+                }
+                else {
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, there are too many infected players. Please choose another role.");
+                    p.closeInventory();
+                }
+            }
+            else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Hider")) {
+                if ((InfectionGameUtils.getChosenHider().size() / minNumberOfPlayers) <= 0.5 ) {
+                    InfectionGameUtils.addToHider(p);
+                    p.closeInventory();
+                }
+                else {
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, there are too many hiders. Please choose another role.");
+                    p.closeInventory();
+                }
+            }
+            else if (MetaHelper.checkDisplayName(i, ChatColor.BLUE + "Random Role")) {
+                InfectionGameUtils.addToRandom(p);
+                p.closeInventory();
+            }
+        }
+        else if (e.getView().getTitle().equals("Setup Infection!")) {
             e.setCancelled(true);
             ItemStack i = e.getCurrentItem();
             if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Setup Infected Spawn Coordinates")) {
@@ -160,7 +191,8 @@ public class ContainerListener implements Listener {
                 else if (amount < amountOfMax && e.getClick().isRightClick()) {
                     i.setAmount(amount + 1);
                 }
-                DataHelper.addAndSave("Min Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount());
+                DataHelper.addAndSave("Min Number of Players", i.getAmount());
+                InfectionGameUtils.setMinNumberOfPlayers(i.getAmount());
             }
             else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Maximum Number of Players")) {
                 int amount = i.getAmount();
@@ -172,6 +204,7 @@ public class ContainerListener implements Listener {
                     i.setAmount(amount + 1);
                 }
                 DataHelper.addAndSave("Max Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount());
+                InfectionGameUtils.setMaxNumberOfPlayers(i.getAmount());
             }
             else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Allow players to choose their role (infected or hider)?")) {
                 if (MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No")) {

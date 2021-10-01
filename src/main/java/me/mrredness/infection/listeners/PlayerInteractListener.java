@@ -1,14 +1,19 @@
 package me.mrredness.infection.listeners;
 
+import me.mrredness.infection.InfectionGameUtils;
 import me.mrredness.infection.commands.DataHelper;
+import me.mrredness.infection.commands.MetaHelper;
 import me.mrredness.infection.commands.RangeHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -26,7 +31,37 @@ public class PlayerInteractListener implements Listener {
     static ItemStack setupItem;
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (e.getClickedBlock() != null) {
+        if (Objects.requireNonNull(e.getItem()).getType().equals(Material.MAP)) {
+            try {
+                eTitle = e.getItem().getItemMeta().getDisplayName();
+            }
+            catch (NullPointerException exception) {eTitle = "";}
+            if (eTitle.equals(ChatColor.AQUA + "Choose your role in Infection!")) {
+                e.setCancelled(true);
+                Player p = e.getPlayer();
+                Inventory chooseRoleInv = Bukkit.createInventory(p, 9, ChatColor.AQUA + "Choose your role in Infection!");
+                ItemStack infected = new ItemStack(Material.DIAMOND_SWORD, 1);
+                MetaHelper.setDisplayName(infected, ChatColor.RED + "Infected");
+                String numberOfInfected = String.valueOf(InfectionGameUtils.getChosenInfected().size());
+                if (numberOfInfected.equals("1")) {MetaHelper.setLore(infected, (ChatColor.BLUE + "1 player"));}
+                else {MetaHelper.setLore(infected, (ChatColor.BLUE + numberOfInfected + " players"));}
+                ItemStack hider = new ItemStack(Material.FEATHER, 1);
+                MetaHelper.setDisplayName(hider, ChatColor.GREEN + "Hider");
+                String numberOfHiders = String.valueOf(InfectionGameUtils.getChosenHider().size());
+                if (numberOfHiders.equals("1")) {MetaHelper.setLore(hider, (ChatColor.BLUE + "1 player"));}
+                else {MetaHelper.setLore(hider, (ChatColor.BLUE + numberOfHiders + " players"));}
+                ItemStack random = new ItemStack(Material.ENCHANTED_BOOK, 1);
+                MetaHelper.setDisplayName(random, ChatColor.BLUE + "Random Role");
+                String numberOfRandom = String.valueOf(InfectionGameUtils.getChosenRandom().size());
+                if (numberOfRandom.equals("1")) {MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + "1 player"));}
+                else {MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + numberOfRandom + " players"));}
+                chooseRoleInv.setItem(1, infected);
+                chooseRoleInv.setItem(4, hider);
+                chooseRoleInv.setItem(7, random);
+                p.openInventory(chooseRoleInv);
+            }
+        }
+        else if (e.getClickedBlock() != null) {
             try {
                 eTitle = e.getItem().getItemMeta().getDisplayName();
             }

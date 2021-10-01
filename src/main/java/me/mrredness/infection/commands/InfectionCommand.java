@@ -1,5 +1,6 @@
 package me.mrredness.infection.commands;
 
+import me.mrredness.infection.BarCountdown;
 import me.mrredness.infection.Infection;
 import me.mrredness.infection.InfectionGameUtils;
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ public class InfectionCommand implements CommandExecutor {
 
     private final Infection plugin;
     private final boolean worldBorderEnabled;
+    private static boolean secondTimeRunningForceStart = false;
 
     public InfectionCommand(Infection plugin, boolean worldBorderEnabled) {
         this.plugin = plugin;
@@ -86,6 +88,42 @@ public class InfectionCommand implements CommandExecutor {
                     return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.setup\"");
+                    return false;
+                }
+            }
+            else if (args[0].equals("forcestart")) {
+                if (p.hasPermission("infection.forceStart")) {
+                    if (args.length == 2) {
+                        if (!secondTimeRunningForceStart) {
+                            if (BarCountdown.getPlayersInGame().size() < ((int) DataHelper.get("Min Number of Players"))) {
+                                p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
+                                secondTimeRunningForceStart = true;
+                                return true;
+                            }
+                        }
+                        int numberToSet = Integer.parseInt(args[1]);
+                        if (numberToSet > 0) {
+                            BarCountdown.setNumberOfSecondsUntilStart(Integer.parseInt(args[1]));
+                            BarCountdown.setForceStart(true);
+                            return true;
+                        }
+                        p.sendMessage(ChatColor.RED + "Please use a natural number (greater than 0).");
+                    } else if (args.length == 1) {
+                        if (!secondTimeRunningForceStart) {
+                            if (BarCountdown.getPlayersInGame().size() < ((int) DataHelper.get("Min Number of Players"))) {
+                                p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
+                                secondTimeRunningForceStart = true;
+                                return true;
+                            }
+                        }
+                        BarCountdown.setNumberOfSecondsUntilStart(1);
+                        BarCountdown.setForceStart(true);
+
+                        return true;
+                    }
+                }
+                else {
+                    p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.forceStart\"");
                     return false;
                 }
             }

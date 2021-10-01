@@ -16,6 +16,16 @@ public class InfectionTabCompletion implements TabCompleter {
             options.add("join");
             options.add("leave");
             options.add("setup");
+            options.add("forcestart");
+            return options;
+        }
+        if (args[0].equals("forcestart") && args.length == 2) {
+            List<String> options = new ArrayList<>();
+            options.add("1");
+            options.add("15");
+            options.add("30");
+            options.add("45");
+            options.add("60");
             return options;
         }
         return null;
