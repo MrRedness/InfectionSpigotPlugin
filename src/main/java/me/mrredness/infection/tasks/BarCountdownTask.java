@@ -1,5 +1,6 @@
-package me.mrredness.infection;
+package me.mrredness.infection.tasks;
 
+import me.mrredness.infection.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -10,11 +11,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 
-public class BarCountdown extends BukkitRunnable {
+public class BarCountdownTask extends BukkitRunnable {
 
     static HashSet<Player> playersInGame;
     public static HashSet<Player> getPlayersInGame() {return playersInGame;}
-    public static void setPlayersInGame(HashSet<Player> playersInGame) {BarCountdown.playersInGame = playersInGame;}
+    public static void setPlayersInGame(HashSet<Player> playersInGame) {
+        BarCountdownTask.playersInGame = playersInGame;}
 
 
     static BossBar countdownBar = Bukkit.createBossBar("Waiting for Players", BarColor.YELLOW, BarStyle.SEGMENTED_10);
@@ -24,20 +26,22 @@ public class BarCountdown extends BukkitRunnable {
     static boolean forceStart = false;
 
     public static void setForceStart(boolean forceStart) {
-        BarCountdown.forceStart = forceStart;
+        BarCountdownTask.forceStart = forceStart;
     }
 
     static int numberOfSecondsUntilStart = 60;
     public static int getNumberOfSecondsUntilStart() {return numberOfSecondsUntilStart;}
-    public static void setNumberOfSecondsUntilStart(int numberOfSecondsUntilStart) {BarCountdown.numberOfSecondsUntilStart = numberOfSecondsUntilStart;}
+    public static void setNumberOfSecondsUntilStart(int numberOfSecondsUntilStart) {
+        BarCountdownTask.numberOfSecondsUntilStart = numberOfSecondsUntilStart;}
 
     static int numberOfMorePlayersNeeded;
-    public static void setNumberOfMorePlayersNeeded(int numberOfMorePlayersNeeded) {BarCountdown.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;}
+    public static void setNumberOfMorePlayersNeeded(int numberOfMorePlayersNeeded) {
+        BarCountdownTask.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;}
 
 
-    public BarCountdown(HashSet<Player> playersInGame, int numberOfMorePlayersNeeded) {
-        BarCountdown.playersInGame = playersInGame;
-        BarCountdown.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;
+    public BarCountdownTask(HashSet<Player> playersInGame, int numberOfMorePlayersNeeded) {
+        BarCountdownTask.playersInGame = playersInGame;
+        BarCountdownTask.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;
     }
 
     @Override
@@ -53,7 +57,7 @@ public class BarCountdown extends BukkitRunnable {
                 numberOfSecondsUntilStart--;
                 if (numberOfSecondsUntilStart == 0) {
                     removeAll();
-                    InfectionGameUtils.startGame();
+                    new StartGameTask().runTask(Bukkit.getServer().getPluginManager().getPlugin("Infection"));
                 }
             }
             else if (numberOfMorePlayersNeeded == 1) {

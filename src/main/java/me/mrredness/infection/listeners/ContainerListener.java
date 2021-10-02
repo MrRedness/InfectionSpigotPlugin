@@ -46,9 +46,9 @@ public class ContainerListener implements Listener {
         else if (e.getView().getTitle().equals(ChatColor.AQUA + "Choose your role in Infection!")) {
             e.setCancelled(true);
             ItemStack i = e.getCurrentItem();
-            double minNumberOfPlayers = (double) InfectionGameUtils.getMinNumberOfPlayers();
+            double numberOfPlayers = Math.max(InfectionGameUtils.getMinNumberOfPlayers(), InfectionGameUtils.getPlayersInGame().size());
             if (MetaHelper.checkDisplayName(i, ChatColor.RED + "Infected")) {
-                if ((InfectionGameUtils.getChosenInfected().size() / minNumberOfPlayers) <= 0.5 ) {
+                if ((InfectionGameUtils.getChosenInfected().size() / numberOfPlayers) <= 0.5 ) {
                     InfectionGameUtils.addToInfected(p);
                     p.closeInventory();
                 }
@@ -58,7 +58,7 @@ public class ContainerListener implements Listener {
                 }
             }
             else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Hider")) {
-                if ((InfectionGameUtils.getChosenHider().size() / minNumberOfPlayers) <= 0.5 ) {
+                if ((InfectionGameUtils.getChosenHider().size() / numberOfPlayers) <= 0.5 ) {
                     InfectionGameUtils.addToHider(p);
                     p.closeInventory();
                 }

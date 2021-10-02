@@ -2,7 +2,7 @@ package me.mrredness.infection;
 
 import me.mrredness.infection.commands.DataHelper;
 import me.mrredness.infection.commands.MetaHelper;
-import org.bukkit.Bukkit;
+import me.mrredness.infection.tasks.BarCountdownTask;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,6 +23,7 @@ public class InfectionGameUtils {
     static HashMap<UUID, Location> playerPreviousLocation = new HashMap<>();
 
     static HashMap<UUID, ItemStack[]> playerPreviousInventory = new HashMap<>();
+    static HashMap<UUID, ItemStack[]> playerPreviousArmor = new HashMap<>();
 
     static boolean lobbyStage = true;
     static BukkitTask barCountdown;
@@ -73,13 +74,14 @@ public class InfectionGameUtils {
             } else {
                 playerPreviousLocation.put(p.getUniqueId(), p.getLocation());
                 playerPreviousInventory.put(p.getUniqueId(), p.getInventory().getStorageContents());
+                playerPreviousArmor.put(p.getUniqueId(), p.getInventory().getArmorContents());
                 p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
                 p.getInventory().clear();
                 playersInGame.add(p);
                 p.sendMessage(ChatColor.GREEN + "Welcome to Infection!");
                 int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
-                BarCountdown.setNumberOfMorePlayersNeeded(numberOfMorePlayersNeeded);
-                BarCountdown.setPlayersInGame(playersInGame);
+                BarCountdownTask.setNumberOfMorePlayersNeeded(numberOfMorePlayersNeeded);
+                BarCountdownTask.setPlayersInGame(playersInGame);
                 if (numberOfMorePlayersNeeded == 1) {
                     for (Player players : playersInGame) {
                         players.sendMessage(ChatColor.AQUA + randomJoinMessage(p));
@@ -94,7 +96,7 @@ public class InfectionGameUtils {
                     if (worldBorderEnabled) {
                         BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
                     }
-                    barCountdown = new BarCountdown(playersInGame, numberOfMorePlayersNeeded).runTaskAsynchronously(plugin);
+                    barCountdown = new BarCountdownTask(playersInGame, numberOfMorePlayersNeeded).runTaskAsynchronously(plugin);
                 }
                 if (DataHelper.checkBoolean("Allow Choice of Role")) {
                     ItemStack chooseRoleOpenInv = new ItemStack(Material.MAP, 1);
@@ -115,9 +117,10 @@ public class InfectionGameUtils {
             playerPreviousLocation.remove(p.getUniqueId());
             p.getInventory().clear();
             p.getInventory().setContents(playerPreviousInventory.get(p.getUniqueId()));
+            p.getInventory().setArmorContents(playerPreviousArmor.get(p.getUniqueId()));
             p.setDisplayName(p.getName());
             playerPreviousInventory.remove(p.getUniqueId());
-            BarCountdown.removePlayer(p);
+            BarCountdownTask.removePlayer(p);
             p.sendMessage(ChatColor.GREEN + "Bye! Play again soon!");
             if (playersInGame.size() == 0) {
                 BorderUtils.removeBorder("Infection Lobby Border Range", "Infection Lobby World");
@@ -150,6 +153,12 @@ public class InfectionGameUtils {
             else if (chosenHider.contains(p.getUniqueId())) {
                 becomeHider(p);
             }
+            else if ((getChosenInfected().size() / (double) playersInGame.size()) >= 0.5) {
+                becomeHider(p);
+            }
+            else if ((getChosenHider().size() / (double) playersInGame.size()) >= 0.5) {
+                becomeInfected(p);
+            }
             else if (new Random().nextBoolean()) {
                 becomeInfected(p);
             }
@@ -161,14 +170,16 @@ public class InfectionGameUtils {
 
     public static void becomeInfected(Player p) {
         p.teleport((Location) DataHelper.get("Infection Spawn Location"));
-        p.setDisplayName(ChatColor.RED + p.getDisplayName());
+        p.setPlayerListName(ChatColor.RED + "Infected: " + ChatColor.YELLOW + p.getName());
+        p.setDisplayName(ChatColor.RED + "Infected: " + ChatColor.YELLOW + p.getName() + ChatColor.WHITE);
         p.getInventory().clear();
         p.getInventory().setContents(infectedInv);
     }
 
     public static void becomeHider(Player p) {
         p.teleport(TeleportUtils.findSafeLocation(DataHelper.getHashMap("Infection Border Range")));
-        p.setDisplayName(ChatColor.AQUA + p.getDisplayName());
+        p.setPlayerListName(ChatColor.AQUA + "Hider: " + ChatColor.YELLOW + p.getName());
+        p.setDisplayName(ChatColor.AQUA + "Hider: " + ChatColor.YELLOW + p.getName() + ChatColor.WHITE);
         p.getInventory().clear();
         p.getInventory().setContents(hiderInv);
     }

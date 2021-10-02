@@ -6,6 +6,7 @@ import me.mrredness.infection.listeners.ChatListener;
 import me.mrredness.infection.listeners.ContainerListener;
 import me.mrredness.infection.listeners.PlayerInteractListener;
 import me.mrredness.infection.listeners.PlayerQuitListener;
+import me.mrredness.infection.tasks.BarCountdownTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,7 +45,7 @@ public final class Infection extends JavaPlugin {
     public void onDisable() {
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
-        BarCountdown.removeAll();
+        BarCountdownTask.removeAll();
         Bukkit.getServer().getScheduler().cancelTasks(this);
         for (Player p : InfectionGameUtils.getPlayersInGame()) {
             InfectionGameUtils.leaveGame(p);

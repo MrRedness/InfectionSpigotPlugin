@@ -13,8 +13,8 @@ public class ReleaseInfectedCountdown extends BukkitRunnable {
         while (keepRunning) {
             for (Player p : InfectionGameUtils.getPlayersInGame()) {
                 if (InfectionGameUtils.getChosenInfected().contains(p)) {
-                    PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS)
-                    p.addPotionEffect()
+             //       PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS)
+             //       p.addPotionEffect()
                 }
                 else {
 
