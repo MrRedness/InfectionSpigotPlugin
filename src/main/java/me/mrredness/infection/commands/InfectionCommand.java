@@ -134,6 +134,15 @@ public class InfectionCommand implements CommandExecutor {
                     return false;
                 }
             }
+            else if (args[0].equals("endgame")) {
+                if (p.hasPermission("infection.endGame")) {
+                    InfectionGameUtils.endGame();
+                    return true;
+                } else {
+                    p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.endGame\"");
+                    return false;
+                }
+            }
             else {return false;}
         } else {
             LogRecord console = new LogRecord(Level.WARNING, "This command can only be run by players.");

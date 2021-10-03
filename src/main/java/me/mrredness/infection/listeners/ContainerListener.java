@@ -48,7 +48,7 @@ public class ContainerListener implements Listener {
             ItemStack i = e.getCurrentItem();
             double numberOfPlayers = Math.max(InfectionGameUtils.getMinNumberOfPlayers(), InfectionGameUtils.getPlayersInGame().size());
             if (MetaHelper.checkDisplayName(i, ChatColor.RED + "Infected")) {
-                if ((InfectionGameUtils.getChosenInfected().size() / numberOfPlayers) <= 0.5 ) {
+                if ((InfectionGameUtils.getInfected().size() / numberOfPlayers) <= 0.5 ) {
                     InfectionGameUtils.addToInfected(p);
                     p.closeInventory();
                 }
@@ -58,7 +58,7 @@ public class ContainerListener implements Listener {
                 }
             }
             else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Hider")) {
-                if ((InfectionGameUtils.getChosenHider().size() / numberOfPlayers) <= 0.5 ) {
+                if ((InfectionGameUtils.getHiders().size() / numberOfPlayers) <= 0.5 ) {
                     InfectionGameUtils.addToHider(p);
                     p.closeInventory();
                 }

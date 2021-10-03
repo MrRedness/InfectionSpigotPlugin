@@ -42,12 +42,12 @@ public class PlayerInteractListener implements Listener {
                 Inventory chooseRoleInv = Bukkit.createInventory(p, 9, ChatColor.AQUA + "Choose your role in Infection!");
                 ItemStack infected = new ItemStack(Material.DIAMOND_SWORD, 1);
                 MetaHelper.setDisplayName(infected, ChatColor.RED + "Infected");
-                String numberOfInfected = String.valueOf(InfectionGameUtils.getChosenInfected().size());
+                String numberOfInfected = String.valueOf(InfectionGameUtils.getInfected().size());
                 if (numberOfInfected.equals("1")) {MetaHelper.setLore(infected, (ChatColor.BLUE + "1 player"));}
                 else {MetaHelper.setLore(infected, (ChatColor.BLUE + numberOfInfected + " players"));}
                 ItemStack hider = new ItemStack(Material.FEATHER, 1);
                 MetaHelper.setDisplayName(hider, ChatColor.GREEN + "Hider");
-                String numberOfHiders = String.valueOf(InfectionGameUtils.getChosenHider().size());
+                String numberOfHiders = String.valueOf(InfectionGameUtils.getHiders().size());
                 if (numberOfHiders.equals("1")) {MetaHelper.setLore(hider, (ChatColor.BLUE + "1 player"));}
                 else {MetaHelper.setLore(hider, (ChatColor.BLUE + numberOfHiders + " players"));}
                 ItemStack random = new ItemStack(Material.ENCHANTED_BOOK, 1);

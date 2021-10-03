@@ -15,8 +15,15 @@ public class InfectionTabCompletion implements TabCompleter {
             List<String> options = new ArrayList<>();
             options.add("join");
             options.add("leave");
-            options.add("setup");
-            options.add("forcestart");
+            if (sender.hasPermission("infection.setup")) {
+                options.add("setup");
+            }
+            if (sender.hasPermission("infection.forceStart")) {
+                options.add("forcestart");
+            }
+            if (sender.hasPermission("infection.endGame")) {
+                options.add("endgame");
+            }
             return options;
         }
         if (args[0].equals("forcestart") && args.length == 2) {
