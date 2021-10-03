@@ -1,8 +1,10 @@
 package me.mrredness.infection.commands;
 
+import me.mrredness.helpers.DataHelper;
+import me.mrredness.helpers.MetaHelper;
 import me.mrredness.infection.tasks.BarCountdownTask;
 import me.mrredness.infection.Infection;
-import me.mrredness.infection.InfectionGameUtils;
+import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.WaitForSecondAttemptTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -56,7 +58,7 @@ public class InfectionCommand implements CommandExecutor {
                     } else if (!DataHelper.checkBoolean("Infection Lobby Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
                     } else {
-                        InfectionGameUtils.joinGame(p, worldBorderEnabled, plugin);
+                        InfectionGame.joinGame(p, worldBorderEnabled, plugin);
                     }
                     return true;
                 } else {
@@ -67,7 +69,7 @@ public class InfectionCommand implements CommandExecutor {
             }
             else if (args[0].equals("leave")) {
                 if (p.hasPermission("infection.joinGame")) {
-                    InfectionGameUtils.leaveGame(p);
+                    InfectionGame.leaveGame(p);
                     return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.joinGame\"");
@@ -100,7 +102,7 @@ public class InfectionCommand implements CommandExecutor {
                 if (p.hasPermission("infection.forceStart")) {
                     if (args.length == 2) {
                         if (!secondTimeRunningForceStart) {
-                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGameUtils.getMinNumberOfPlayers()) {
+                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
                                 p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
                                 secondTimeRunningForceStart = true;
                                 new WaitForSecondAttemptTask().runTaskLater(plugin, 1200);
@@ -116,7 +118,7 @@ public class InfectionCommand implements CommandExecutor {
                         p.sendMessage(ChatColor.RED + "Please use a natural number (greater than 0).");
                     } else if (args.length == 1) {
                         if (!secondTimeRunningForceStart) {
-                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGameUtils.getMinNumberOfPlayers()) {
+                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
                                 p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
                                 secondTimeRunningForceStart = true;
                                 new WaitForSecondAttemptTask().runTaskLater(plugin, 1200);
@@ -136,7 +138,7 @@ public class InfectionCommand implements CommandExecutor {
             }
             else if (args[0].equals("endgame")) {
                 if (p.hasPermission("infection.endGame")) {
-                    InfectionGameUtils.endGame();
+                    InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.");
                     return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.endGame\"");

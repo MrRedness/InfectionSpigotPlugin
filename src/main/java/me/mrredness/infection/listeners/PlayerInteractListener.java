@@ -1,9 +1,9 @@
 package me.mrredness.infection.listeners;
 
-import me.mrredness.infection.InfectionGameUtils;
-import me.mrredness.infection.commands.DataHelper;
-import me.mrredness.infection.commands.MetaHelper;
-import me.mrredness.infection.commands.RangeHelper;
+import me.mrredness.infection.InfectionGame;
+import me.mrredness.helpers.DataHelper;
+import me.mrredness.helpers.MetaHelper;
+import me.mrredness.helpers.RangeHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -42,17 +42,17 @@ public class PlayerInteractListener implements Listener {
                 Inventory chooseRoleInv = Bukkit.createInventory(p, 9, ChatColor.AQUA + "Choose your role in Infection!");
                 ItemStack infected = new ItemStack(Material.DIAMOND_SWORD, 1);
                 MetaHelper.setDisplayName(infected, ChatColor.RED + "Infected");
-                String numberOfInfected = String.valueOf(InfectionGameUtils.getInfected().size());
+                String numberOfInfected = String.valueOf(InfectionGame.getInfected().size());
                 if (numberOfInfected.equals("1")) {MetaHelper.setLore(infected, (ChatColor.BLUE + "1 player"));}
                 else {MetaHelper.setLore(infected, (ChatColor.BLUE + numberOfInfected + " players"));}
                 ItemStack hider = new ItemStack(Material.FEATHER, 1);
                 MetaHelper.setDisplayName(hider, ChatColor.GREEN + "Hider");
-                String numberOfHiders = String.valueOf(InfectionGameUtils.getHiders().size());
+                String numberOfHiders = String.valueOf(InfectionGame.getHiders().size());
                 if (numberOfHiders.equals("1")) {MetaHelper.setLore(hider, (ChatColor.BLUE + "1 player"));}
                 else {MetaHelper.setLore(hider, (ChatColor.BLUE + numberOfHiders + " players"));}
                 ItemStack random = new ItemStack(Material.ENCHANTED_BOOK, 1);
                 MetaHelper.setDisplayName(random, ChatColor.BLUE + "Random Role");
-                String numberOfRandom = String.valueOf(InfectionGameUtils.getChosenRandom().size());
+                String numberOfRandom = String.valueOf(InfectionGame.getChosenRandom().size());
                 if (numberOfRandom.equals("1")) {MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + "1 player"));}
                 else {MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + numberOfRandom + " players"));}
                 chooseRoleInv.setItem(1, infected);

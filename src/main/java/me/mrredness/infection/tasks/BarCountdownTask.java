@@ -1,6 +1,6 @@
 package me.mrredness.infection.tasks;
 
-import me.mrredness.infection.SleepUtils;
+import me.mrredness.utils.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
