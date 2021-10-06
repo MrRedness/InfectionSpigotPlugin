@@ -1,9 +1,9 @@
 package me.mrredness.infection.listeners;
 
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.helpers.DataHelper;
-import me.mrredness.helpers.MetaHelper;
-import me.mrredness.helpers.RangeHelper;
+import me.mrredness.infection.helpers.DataHelper;
+import me.mrredness.infection.helpers.MetaHelper;
+import me.mrredness.infection.helpers.RangeHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

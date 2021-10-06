@@ -1,4 +1,4 @@
-package me.mrredness.helpers;
+package me.mrredness.infection.helpers;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 

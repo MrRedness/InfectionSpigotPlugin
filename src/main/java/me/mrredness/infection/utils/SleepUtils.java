@@ -1,4 +1,4 @@
-package me.mrredness.utils;
+package me.mrredness.infection.utils;
 
 import static java.lang.Thread.sleep;
 

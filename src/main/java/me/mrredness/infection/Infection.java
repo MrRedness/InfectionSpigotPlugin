@@ -3,8 +3,8 @@ package me.mrredness.infection;
 import me.mrredness.infection.commands.InfectionCommand;
 import me.mrredness.infection.commands.InfectionTabCompletion;
 import me.mrredness.infection.listeners.*;
-import me.mrredness.infection.tasks.BarCountdownTask;
-import me.mrredness.utils.BorderUtils;
+import me.mrredness.infection.tasks.LobbyBarCountdownTask;
+import me.mrredness.infection.utils.BorderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -48,7 +48,7 @@ public final class Infection extends JavaPlugin {
     public void onDisable() {
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
         if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
-        BarCountdownTask.removeAll();
+        LobbyBarCountdownTask.removeAll();
         Bukkit.getServer().getScheduler().cancelTasks(this);
         if (InfectionGame.isLobbyStage()) {
             InfectionGame.endGame(ChatColor.RED + "Server is reloading.");

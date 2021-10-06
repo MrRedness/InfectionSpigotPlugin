@@ -1,4 +1,4 @@
-package me.mrredness.helpers;
+package me.mrredness.infection.helpers;
 
 import me.mrredness.infection.InfectionSetupData;
 import org.bukkit.configuration.MemorySection;

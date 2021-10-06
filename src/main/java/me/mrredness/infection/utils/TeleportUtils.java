@@ -1,6 +1,6 @@
-package me.mrredness.utils;
+package me.mrredness.infection.utils;
 
-import me.mrredness.helpers.DataHelper;
+import me.mrredness.infection.helpers.DataHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

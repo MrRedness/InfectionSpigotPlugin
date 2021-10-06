@@ -2,7 +2,7 @@ package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.EndGame;
-import me.mrredness.utils.SleepUtils;
+import me.mrredness.infection.utils.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;

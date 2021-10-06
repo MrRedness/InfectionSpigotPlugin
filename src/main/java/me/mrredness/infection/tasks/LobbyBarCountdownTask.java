@@ -1,7 +1,8 @@
 package me.mrredness.infection.tasks;
 
+import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.StartGameTask;
-import me.mrredness.utils.SleepUtils;
+import me.mrredness.infection.utils.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -12,12 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
 
-public class BarCountdownTask extends BukkitRunnable {
+public class LobbyBarCountdownTask extends BukkitRunnable {
 
     static HashSet<Player> playersInGame;
-    public static HashSet<Player> getPlayersInGame() {return playersInGame;}
-    public static void setPlayersInGame(HashSet<Player> playersInGame) {
-        BarCountdownTask.playersInGame = playersInGame;}
 
 
     static BossBar countdownBar = Bukkit.createBossBar("Waiting for Players", BarColor.YELLOW, BarStyle.SEGMENTED_10);
@@ -27,27 +25,27 @@ public class BarCountdownTask extends BukkitRunnable {
     static boolean forceStart = false;
 
     public static void setForceStart(boolean forceStart) {
-        BarCountdownTask.forceStart = forceStart;
+        LobbyBarCountdownTask.forceStart = forceStart;
     }
 
     static int numberOfSecondsUntilStart = 60;
-    public static int getNumberOfSecondsUntilStart() {return numberOfSecondsUntilStart;}
     public static void setNumberOfSecondsUntilStart(int numberOfSecondsUntilStart) {
-        BarCountdownTask.numberOfSecondsUntilStart = numberOfSecondsUntilStart;}
+        LobbyBarCountdownTask.numberOfSecondsUntilStart = numberOfSecondsUntilStart;}
 
     static int numberOfMorePlayersNeeded;
-    public static void setNumberOfMorePlayersNeeded(int numberOfMorePlayersNeeded) {
-        BarCountdownTask.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;}
+
+    static int minimumNumberOfPlayers;
 
 
-    public BarCountdownTask(HashSet<Player> playersInGame, int numberOfMorePlayersNeeded) {
-        BarCountdownTask.playersInGame = playersInGame;
-        BarCountdownTask.numberOfMorePlayersNeeded = numberOfMorePlayersNeeded;
+    public LobbyBarCountdownTask(int minimumNumberOfPlayers) {
+        LobbyBarCountdownTask.minimumNumberOfPlayers = minimumNumberOfPlayers;
     }
 
     @Override
     public void run() {
         while (playersInGame.size() > 0 && continueRunning) {
+            playersInGame = InfectionGame.getPlayersInGame();
+            numberOfMorePlayersNeeded = minimumNumberOfPlayers - playersInGame.size();
             countdownBar.removeAll();
             for (Player p : playersInGame) {
                 countdownBar.addPlayer(p);

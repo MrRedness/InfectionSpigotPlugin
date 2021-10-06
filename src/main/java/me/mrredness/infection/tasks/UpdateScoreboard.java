@@ -1,7 +1,7 @@
 package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.utils.SleepUtils;
+import me.mrredness.infection.utils.SleepUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,21 +37,33 @@ public class UpdateScoreboard extends BukkitRunnable {
             }
 
             Score timeLeft = objective.getScore(ChatColor.LIGHT_PURPLE + String.valueOf(minutesLeft) + " minutes & " + secondsLeft + " seconds left.");
-            timeLeft.setScore(6);
+            timeLeft.setScore(8);
             Score hidersLeft = objective.getScore(ChatColor.GREEN + "Hiders Left:" + InfectionGame.getHiders().size());
-            hidersLeft.setScore(5);
+            hidersLeft.setScore(7);
             Score totalHiderLives = objective.getScore(ChatColor.GREEN + "Hider Lives Left: " + hiderLives);
-            totalHiderLives.setScore(4);
+            totalHiderLives.setScore(6);
             Score blank = objective.getScore("");
-            blank.setScore(3);
+            blank.setScore(5);
             Score infectedLeft = objective.getScore(ChatColor.RED + "Infected Left:" + InfectionGame.getInfected().size());
-            infectedLeft.setScore(2);
+            infectedLeft.setScore(4);
             Score totalInfectedLives = objective.getScore(ChatColor.RED + "Infected Lives Left: " + infectedLives);
-            totalInfectedLives.setScore(1);
+            totalInfectedLives.setScore(3);
+            Score blank2 = objective.getScore("");
+            blank2.setScore(2);
 
 
             for (Player p : InfectionGame.getPlayersInGame()) {
-                p.setScoreboard(scoreboard);
+                int numberOfLivesLeft = InfectionGame.getNumberOfLives().get(p.getUniqueId());
+                if (numberOfLivesLeft > 1) {
+                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have: " + numberOfLivesLeft + " lives left.");
+                    playersLives.setScore(1);
+                    p.setScoreboard(scoreboard);
+                }
+                else {
+                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
+                    playersLives.setScore(1);
+                    p.setScoreboard(scoreboard);
+                }
             }
             secondsLeft --;
             if (secondsLeft < 0) {

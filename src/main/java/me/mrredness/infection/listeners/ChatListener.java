@@ -6,8 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import me.mrredness.utils.BorderUtils;
-import me.mrredness.helpers.DataHelper;
+import me.mrredness.infection.utils.BorderUtils;
+import me.mrredness.infection.helpers.DataHelper;
 
 
 public class ChatListener implements Listener {

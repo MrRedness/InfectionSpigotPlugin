@@ -1,11 +1,11 @@
 package me.mrredness.infection.listeners;
 
-import me.mrredness.utils.BorderUtils;
+import me.mrredness.infection.utils.BorderUtils;
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.utils.SleepUtils;
-import me.mrredness.utils.TeleportUtils;
-import me.mrredness.helpers.DataHelper;
-import me.mrredness.helpers.MetaHelper;
+import me.mrredness.infection.utils.SleepUtils;
+import me.mrredness.infection.utils.TeleportUtils;
+import me.mrredness.infection.helpers.DataHelper;
+import me.mrredness.infection.helpers.MetaHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

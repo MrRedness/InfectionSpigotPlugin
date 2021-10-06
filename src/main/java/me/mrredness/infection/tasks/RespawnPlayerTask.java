@@ -2,15 +2,13 @@ package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.tasks.AsyncToSync.PlayerBecomeRoleTask;
 import me.mrredness.infection.tasks.AsyncToSync.PlayerChangeGamemodeTask;
-import me.mrredness.utils.SleepUtils;
+import me.mrredness.infection.utils.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Objects;
 
 public class RespawnPlayerTask extends BukkitRunnable {
 

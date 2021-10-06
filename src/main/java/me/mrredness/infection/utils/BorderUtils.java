@@ -1,4 +1,4 @@
-package me.mrredness.utils;
+package me.mrredness.infection.utils;
 import java.util.HashMap;
 
 import com.wimbli.WorldBorder.BorderData;
@@ -6,7 +6,7 @@ import com.wimbli.WorldBorder.Config;
 
 //import org.bukkit.WorldBorder;
 
-import me.mrredness.helpers.DataHelper;
+import me.mrredness.infection.helpers.DataHelper;
 
 //import org.bukkit.World;
 

@@ -1,8 +1,8 @@
 package me.mrredness.infection.commands;
 
-import me.mrredness.helpers.DataHelper;
-import me.mrredness.helpers.MetaHelper;
-import me.mrredness.infection.tasks.BarCountdownTask;
+import me.mrredness.infection.helpers.DataHelper;
+import me.mrredness.infection.helpers.MetaHelper;
+import me.mrredness.infection.tasks.LobbyBarCountdownTask;
 import me.mrredness.infection.Infection;
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.WaitForSecondAttemptTask;
@@ -102,7 +102,7 @@ public class InfectionCommand implements CommandExecutor {
                 if (p.hasPermission("infection.forceStart")) {
                     if (args.length == 2) {
                         if (!secondTimeRunningForceStart) {
-                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
+                            if (InfectionGame.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
                                 p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
                                 secondTimeRunningForceStart = true;
                                 new WaitForSecondAttemptTask().runTaskLater(plugin, 1200);
@@ -111,22 +111,22 @@ public class InfectionCommand implements CommandExecutor {
                         }
                         int numberToSet = Integer.parseInt(args[1]);
                         if (numberToSet > 0) {
-                            BarCountdownTask.setNumberOfSecondsUntilStart(Integer.parseInt(args[1]));
-                            BarCountdownTask.setForceStart(true);
+                            LobbyBarCountdownTask.setNumberOfSecondsUntilStart(Integer.parseInt(args[1]));
+                            LobbyBarCountdownTask.setForceStart(true);
                             return true;
                         }
                         p.sendMessage(ChatColor.RED + "Please use a natural number (greater than 0).");
                     } else if (args.length == 1) {
                         if (!secondTimeRunningForceStart) {
-                            if (BarCountdownTask.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
+                            if (InfectionGame.getPlayersInGame().size() < InfectionGame.getMinNumberOfPlayers()) {
                                 p.sendMessage(ChatColor.RED + "It seems you have less players than the minimum amount. Are you sure you wish to start the game? If yes, then run the command again.");
                                 secondTimeRunningForceStart = true;
                                 new WaitForSecondAttemptTask().runTaskLater(plugin, 1200);
                                 return true;
                             }
                         }
-                        BarCountdownTask.setNumberOfSecondsUntilStart(1);
-                        BarCountdownTask.setForceStart(true);
+                        LobbyBarCountdownTask.setNumberOfSecondsUntilStart(1);
+                        LobbyBarCountdownTask.setForceStart(true);
 
                         return true;
                     }

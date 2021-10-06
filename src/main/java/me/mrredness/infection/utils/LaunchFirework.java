@@ -1,9 +1,7 @@
-package me.mrredness;
+package me.mrredness.infection.utils;
 
 
 import me.mrredness.infection.tasks.AsyncToSync.SummonFirework;
-import me.mrredness.utils.SleepUtils;
-import me.mrredness.utils.TeleportUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.scheduler.BukkitRunnable;
