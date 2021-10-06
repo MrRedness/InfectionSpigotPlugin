@@ -3,7 +3,7 @@ package me.mrredness.infection;
 import me.mrredness.infection.commands.InfectionCommand;
 import me.mrredness.infection.commands.InfectionTabCompletion;
 import me.mrredness.infection.listeners.*;
-import me.mrredness.infection.tasks.async.LobbyBarCountdownTask;
+import me.mrredness.infection.tasks.LobbyBarCountdownTask;
 import me.mrredness.infection.utils.BorderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

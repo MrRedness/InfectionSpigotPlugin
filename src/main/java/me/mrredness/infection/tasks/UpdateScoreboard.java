@@ -1,4 +1,4 @@
-package me.mrredness.infection.tasks.async;
+package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.utils.SleepUtils;
@@ -37,47 +37,33 @@ public class UpdateScoreboard extends BukkitRunnable {
             }
 
             Score timeLeft = objective.getScore(ChatColor.LIGHT_PURPLE + String.valueOf(minutesLeft) + " minutes & " + secondsLeft + " seconds left.");
-            timeLeft.setScore(11);
-            Score blank1 = objective.getScore("");
-            blank1.setScore(10);
-            Score blank2 = objective.getScore("");
-            blank2.setScore(8);
+            timeLeft.setScore(8);
             Score hidersLeft = objective.getScore(ChatColor.GREEN + "Hiders Left:" + InfectionGame.getHiders().size());
             hidersLeft.setScore(7);
             Score totalHiderLives = objective.getScore(ChatColor.GREEN + "Hider Lives Left: " + hiderLives);
             totalHiderLives.setScore(6);
-            Score blank3 = objective.getScore("");
-            blank3.setScore(5);
+            Score blank = objective.getScore("");
+            blank.setScore(5);
             Score infectedLeft = objective.getScore(ChatColor.RED + "Infected Left:" + InfectionGame.getInfected().size());
             infectedLeft.setScore(4);
             Score totalInfectedLives = objective.getScore(ChatColor.RED + "Infected Lives Left: " + infectedLives);
             totalInfectedLives.setScore(3);
-            Score blank4 = objective.getScore("");
-            blank4.setScore(2);
+            Score blank2 = objective.getScore("");
+            blank2.setScore(2);
 
 
             for (Player p : InfectionGame.getPlayersInGame()) {
                 int numberOfLivesLeft = InfectionGame.getNumberOfLives().get(p.getUniqueId());
-                boolean infected = InfectionGame.getInfected().contains(p.getUniqueId());
-                Score playersLives;
-                Score role;
                 if (numberOfLivesLeft > 1) {
-                    playersLives = objective.getScore(ChatColor.GOLD + "You have: " + numberOfLivesLeft + " lives left.");
+                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have: " + numberOfLivesLeft + " lives left.");
+                    playersLives.setScore(1);
+                    p.setScoreboard(scoreboard);
                 }
                 else {
-                    playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
+                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
+                    playersLives.setScore(1);
+                    p.setScoreboard(scoreboard);
                 }
-                if (infected) {
-                    role = objective.getScore(ChatColor.BLUE + "You are " + ChatColor.RED + "INFECTED!");
-                }
-                else {
-                    role = objective.getScore(ChatColor.BLUE + "You are " + ChatColor.DARK_GREEN + "HIDER!");
-                }
-                role.setScore(9);
-                playersLives.setScore(1);
-                p.setScoreboard(scoreboard);
-
-
             }
             secondsLeft --;
             if (secondsLeft < 0) {

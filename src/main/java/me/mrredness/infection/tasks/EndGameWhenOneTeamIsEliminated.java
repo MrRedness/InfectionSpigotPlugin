@@ -1,4 +1,4 @@
-package me.mrredness.infection.tasks.async;
+package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.EndGame;
