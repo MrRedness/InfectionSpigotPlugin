@@ -41,7 +41,8 @@ public final class Infection extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityDamageListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
     }
     @Override
     public void onDisable() {

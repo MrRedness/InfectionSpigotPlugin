@@ -1,5 +1,6 @@
 package me.mrredness.infection.tasks;
 
+import me.mrredness.infection.tasks.AsyncToSync.StartGameTask;
 import me.mrredness.utils.SleepUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

@@ -1,6 +1,6 @@
-package me.mrredness.infection.tasks;
+package me.mrredness.infection.tasks.AsyncToSync;
 
-import me.mrredness.infection.Infection;
+
 import me.mrredness.infection.commands.InfectionCommand;
 import org.bukkit.scheduler.BukkitRunnable;
 

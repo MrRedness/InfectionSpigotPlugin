@@ -1,11 +1,10 @@
 package me.mrredness.infection;
 
+import me.mrredness.LaunchFirework;
 import me.mrredness.helpers.ConfigHelper;
 import me.mrredness.helpers.DataHelper;
 import me.mrredness.helpers.MetaHelper;
-import me.mrredness.infection.tasks.BarCountdownTask;
-import me.mrredness.infection.tasks.RespawnPlayerTask;
-import me.mrredness.infection.tasks.UpdateScoreboard;
+import me.mrredness.infection.tasks.*;
 import me.mrredness.utils.BorderUtils;
 import me.mrredness.utils.TeleportUtils;
 import org.bukkit.*;
@@ -117,6 +116,12 @@ public class InfectionGame {
 
     private static final Scoreboard scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
 
+    public static void heal(Player p){
+        p.setHealth(20);
+        p.setFoodLevel(20);
+        p.setSaturation(20);
+    }
+
     public static void joinGame(Player p, boolean worldBorderEnabled, Infection plugin) {
         InfectionGame.worldBorderEnabled = worldBorderEnabled;
         InfectionGame.plugin = plugin;
@@ -132,6 +137,7 @@ public class InfectionGame {
                 p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
                 p.getInventory().clear();
                 p.setGameMode(GameMode.ADVENTURE);
+                heal(p);
                 playersInGame.add(p);
                 p.sendMessage(ChatColor.GREEN + "Welcome to Infection!");
                 int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
@@ -173,6 +179,7 @@ public class InfectionGame {
             p.getInventory().setContents(playerPreviousInventory.get(p.getUniqueId()));
             p.setDisplayName(p.getName());
             p.setGameMode(playerPreviousGamemode.get(p.getUniqueId()));
+            heal(p);
             playerPreviousInventory.remove(p.getUniqueId());
             BarCountdownTask.removePlayer(p);
             p.sendMessage(ChatColor.GREEN + "Bye! Play again soon!");
@@ -209,45 +216,24 @@ public class InfectionGame {
         }
         for (Player p : playersInGame) {
             if (infected.contains(p.getUniqueId())) {
-                becomeInfected(p);
-                p.sendMessage(ChatColor.RED + "You are INFECTED. You will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if they kill you, they will gain an extra life (up to 3). You only have 2 life, so be careful.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
+                becomeInfectedForFirstTime(p);
             } else if (hiders.contains(p.getUniqueId())) {
-                becomeHider(p);
-                p.sendMessage(ChatColor.GREEN + "You are a hider. The hunters will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if you kill them, you will gain an extra life (up to 3). They only have 2 lifes, so try to team up and take them out.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
+                becomeHiderForFirstTime(p);
             } else if ((getInfected().size() / (double) playersInGame.size()) >= 0.5) {
                 becomeHider(p);
-                p.sendMessage(ChatColor.GREEN + "You are a hider. The hunters will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if you kill them, you will gain an extra life (up to 3). They only have 2 lifes, so try to team up and take them out.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
             } else if ((getHiders().size() / (double) playersInGame.size()) >= 0.5) {
-                addToInfected(p);
-                becomeInfected(p);
-                p.sendMessage(ChatColor.RED + "You are INFECTED. You will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if they kill you, they will gain an extra life (up to 3). You only have 2 life, so be careful.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
+                becomeInfectedForFirstTime(p);
             } else if (new Random().nextBoolean()) {
-                becomeInfected(p);
-                p.sendMessage(ChatColor.RED + "You are INFECTED. You will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if they kill you, they will gain an extra life (up to 3). You only have 2 life, so be careful.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
+                becomeInfectedForFirstTime(p);
+
             } else {
-                becomeHider(p);
-                p.sendMessage(ChatColor.GREEN + "You are a hider. The hunters will be released in 30 seconds to hunt down and kill all the hiders.");
-                p.sendMessage(ChatColor.DARK_GREEN + "However, if you kill them, you will gain an extra life (up to 3). They only have 2 lifes, so try to team up and take them out.");
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
-                p.sendMessage(ChatColor.GOLD + "Good luck!");
+                becomeHiderForFirstTime(p);
+
             }
-            new UpdateScoreboard(scoreboard).runTaskAsynchronously(plugin);
         }
+        new UpdateScoreboard(scoreboard).runTaskAsynchronously(plugin);
+        new EndGameWhenOneTeamIsEliminated().runTaskAsynchronously(plugin);
+        new ReleaseInfectedCountdown().runTaskAsynchronously(plugin);
     }
 
     public static void becomeInfected(Player p) {
@@ -257,7 +243,15 @@ public class InfectionGame {
         p.setDisplayName(ChatColor.RED + "Infected: " + ChatColor.YELLOW + p.getName() + ChatColor.WHITE);
         p.getInventory().clear();
         p.getInventory().setContents(infectedInv);
+        heal(p);
+    }
+    public static void becomeInfectedForFirstTime(Player p) {
+        becomeInfected(p);
         numberOfLives.put(p.getUniqueId(), 2);
+        p.sendMessage(ChatColor.RED + "You are INFECTED. You will be released in 30 seconds to hunt down and kill all the hiders.");
+        p.sendMessage(ChatColor.DARK_GREEN + "However, if they kill you, they will gain an extra life (up to 3). You only have 2 life, so be careful.");
+        p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
+        p.sendMessage(ChatColor.GOLD + "Good luck!");
     }
 
     public static void becomeHider(Player p) {
@@ -267,27 +261,36 @@ public class InfectionGame {
         p.setDisplayName(ChatColor.AQUA + "Hider: " + ChatColor.YELLOW + p.getName() + ChatColor.WHITE);
         p.getInventory().clear();
         p.getInventory().setContents(hiderInv);
+        heal(p);
+    }
+    public static void becomeHiderForFirstTime(Player p){
+        becomeHider(p);
         numberOfLives.put(p.getUniqueId(), 1);
+        p.sendMessage(ChatColor.GREEN + "You are a hider. The hunters will be released in 30 seconds to hunt down and kill all the hiders.");
+        p.sendMessage(ChatColor.DARK_GREEN + "However, if you kill them, you will gain an extra life (up to 3). They only have 2 lifes, so try to team up and take them out.");
+        p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
+        p.sendMessage(ChatColor.GOLD + "Good luck!");
     }
 
     public static void death(Player killed) {
-        int numberOfLivesLeft = InfectionGame.numberOfLives.get(killed.getUniqueId());
+        int numberOfLivesLeft = InfectionGame.numberOfLives.get(killed.getUniqueId()) - 1;
         if (hiders.contains(killed.getUniqueId())) {
-            if (numberOfLivesLeft == 1) {
-                new RespawnPlayerTask(killed, true, true, 2).runTaskAsynchronously(plugin);
-                numberOfLives.replace(killed.getUniqueId(), 2);
+            if (numberOfLivesLeft == 0) {
+                numberOfLivesLeft = 2;
+                new RespawnPlayerTask(killed, true, true, numberOfLivesLeft).runTaskAsynchronously(plugin);
+                numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             } else {
                 new RespawnPlayerTask(killed, false, false, numberOfLivesLeft).runTaskAsynchronously(plugin);
-                numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft - 1);
+                numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             }
         } else {
-            if (numberOfLivesLeft == 1) {
+            if (numberOfLivesLeft == 0) {
                 killed.setGameMode(GameMode.SPECTATOR);
                 killed.sendMessage(ChatColor.RED + "You ran out of lives and are now spectating.");
                 infected.remove(killed.getUniqueId());
             } else {
                 new RespawnPlayerTask(killed, true, false, numberOfLivesLeft).runTaskAsynchronously(plugin);
-                InfectionGame.numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft - 1);
+                InfectionGame.numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             }
         }
         Player killer = killed.getKiller();
@@ -306,30 +309,35 @@ public class InfectionGame {
     }
 
 
-    public static void endGame(String reason) {
-        lobbyStage = true;
-        infected.clear();
-        hiders.clear();
-        chosenRandom.clear();
-        numberOfLives.clear();
+    public static boolean endGame(String reason) {
+        if (!lobbyStage) {
+            lobbyStage = true;
+            infected.clear();
+            hiders.clear();
+            chosenRandom.clear();
+            numberOfLives.clear();
 
-        for (Player p : playersInGame) {
-            p.sendMessage(reason);
-            p.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
-            p.getInventory().clear();
-            p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
-            if (worldBorderEnabled) {
-                BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
+            for (Player p : playersInGame) {
+                p.sendMessage(reason);
+                p.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
+                p.getInventory().clear();
+                p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
+                if (worldBorderEnabled) {
+                    BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
+                }
+                int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
+                barCountdown = new BarCountdownTask(playersInGame, numberOfMorePlayersNeeded).runTaskAsynchronously(plugin);
+                if (DataHelper.checkBoolean("Allow Choice of Role")) {
+                    ItemStack chooseRoleOpenInv = new ItemStack(Material.MAP, 1);
+                    MetaHelper.setDisplayName(chooseRoleOpenInv, ChatColor.AQUA + "Choose your role in Infection!");
+                    p.getInventory().addItem(chooseRoleOpenInv);
+                }
             }
-            int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
-            barCountdown = new BarCountdownTask(playersInGame, numberOfMorePlayersNeeded).runTaskAsynchronously(plugin);
-            if (DataHelper.checkBoolean("Allow Choice of Role")) {
-                ItemStack chooseRoleOpenInv = new ItemStack(Material.MAP, 1);
-                MetaHelper.setDisplayName(chooseRoleOpenInv, ChatColor.AQUA + "Choose your role in Infection!");
-                p.getInventory().addItem(chooseRoleOpenInv);
-            }
+            new LaunchFirework( Bukkit.getWorld((String) DataHelper.get("Infection Spawn World")), DataHelper.getHashMap("Infection Border Range"),
+                    7, 1000, new Color[]{Color.RED, Color.BLUE}).runTaskAsynchronously(plugin);
+            return true;
         }
-
+        return false;
     }
 
     /*

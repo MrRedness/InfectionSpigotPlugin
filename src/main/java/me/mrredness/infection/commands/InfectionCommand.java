@@ -5,7 +5,7 @@ import me.mrredness.helpers.MetaHelper;
 import me.mrredness.infection.tasks.BarCountdownTask;
 import me.mrredness.infection.Infection;
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.infection.tasks.WaitForSecondAttemptTask;
+import me.mrredness.infection.tasks.AsyncToSync.WaitForSecondAttemptTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -138,7 +138,9 @@ public class InfectionCommand implements CommandExecutor {
             }
             else if (args[0].equals("endgame")) {
                 if (p.hasPermission("infection.endGame")) {
-                    InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.");
+                    if (!InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.")) {
+                        p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, the game is not currently running.");
+                    }
                     return true;
                 } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.endGame\"");
