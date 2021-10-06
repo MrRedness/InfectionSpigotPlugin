@@ -1,11 +1,11 @@
 package me.mrredness.infection.listeners;
 
-import me.mrredness.infection.utils.BorderUtils;
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.infection.utils.SleepUtils;
-import me.mrredness.infection.utils.TeleportUtils;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
+import me.mrredness.infection.utils.BorderUtils;
+import me.mrredness.infection.utils.SleepUtils;
+import me.mrredness.infection.utils.TeleportUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ import java.util.Objects;
 
 
 public class ContainerListener implements Listener {
-  //  private final Infection plugin;
+    //  private final Infection plugin;
 
     //  public ContainerListener(Infection plugin) {
     //      this.plugin = plugin;
@@ -29,13 +29,16 @@ public class ContainerListener implements Listener {
     static boolean readyForPlayerInputOnDisablingTestBorder = false;
     static Player user;
     boolean worldBorderEnabled;
-    
-    public ContainerListener(boolean worldBorderEnabled) {this.worldBorderEnabled = worldBorderEnabled;}
+
+    public ContainerListener(boolean worldBorderEnabled) {
+        this.worldBorderEnabled = worldBorderEnabled;
+    }
 
     @EventHandler
     public void onMenuClick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (e.getCurrentItem() == null) {}
+        if (e.getCurrentItem() == null) {
+        }
    /*     else if (e.getView().getTitle().equals("Join Infection!")) {
             e.setCancelled(true);
             if (MetaHelper.checkDisplayName(i,(ChatColor.BLUE + "Join Infection!")) {
@@ -48,34 +51,29 @@ public class ContainerListener implements Listener {
             ItemStack i = e.getCurrentItem();
             double numberOfPlayers = Math.max(InfectionGame.getMinNumberOfPlayers(), InfectionGame.getPlayersInGame().size());
             if (MetaHelper.checkDisplayName(i, ChatColor.RED + "Infected")) {
-                if ((InfectionGame.getInfected().size() / numberOfPlayers) <= 0.5 ) {
+                if ((InfectionGame.getInfected().size() / numberOfPlayers) <= 0.5) {
                     InfectionGame.addToInfected(p);
                     p.closeInventory();
-                }
-                else {
+                } else {
                     p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, there are too many infected players. Please choose another role.");
                     p.closeInventory();
                 }
-            }
-            else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Hider")) {
-                if ((InfectionGame.getHiders().size() / numberOfPlayers) <= 0.5 ) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Hider")) {
+                if ((InfectionGame.getHiders().size() / numberOfPlayers) <= 0.5) {
                     InfectionGame.addToHider(p);
                     p.closeInventory();
-                }
-                else {
+                } else {
                     p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, there are too many hiders. Please choose another role.");
                     p.closeInventory();
                 }
-            }
-            else if (MetaHelper.checkDisplayName(i, ChatColor.BLUE + "Random Role")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.BLUE + "Random Role")) {
                 InfectionGame.addToRandom(p);
                 p.closeInventory();
             }
-        }
-        else if (e.getView().getTitle().equals("Setup Infection!")) {
+        } else if (e.getView().getTitle().equals("Setup Infection!")) {
             e.setCancelled(true);
             ItemStack i = e.getCurrentItem();
-            if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Setup Infected Spawn Coordinates")) {
+            if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Setup Infected Spawn Coordinates")) {
                 Inventory pInv = p.getInventory();
                 ItemStack coordinatePicker = new ItemStack(Material.GOLDEN_AXE, 1);
                 MetaHelper.setDisplayName(coordinatePicker, ChatColor.DARK_AQUA + "Spawn Coordinate Picker");
@@ -87,38 +85,32 @@ public class ContainerListener implements Listener {
                     DataHelper.addAndSave("Infection Spawn Setup Complete", false);
                     p.closeInventory();
                 }
-            }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.GREEN + "Setup Infection Border")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.GREEN + "Setup Infection Border")) {
 
-                    Inventory pInv = p.getInventory();
-                    ItemStack coordinatePicker = new ItemStack(Material.WOODEN_AXE, 1);
-                    MetaHelper.setDisplayName(coordinatePicker, ChatColor.GREEN + "Border Coordinate Picker");
-                    if (!pInv.addItem(coordinatePicker).isEmpty()) {
-                        p.sendMessage("Please have at least one inventory slot open.");
-                        p.closeInventory();
-                    } else {
-                        p.sendMessage(ChatColor.GOLD + "Go to the first corner of your border and left click (using the coordinate picker).");
-                        DataHelper.addAndSave("Infection Border Setup Complete", false);
-                        p.closeInventory();
-                    }
-            }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.BLUE + "Test Border")) {
+                Inventory pInv = p.getInventory();
+                ItemStack coordinatePicker = new ItemStack(Material.WOODEN_AXE, 1);
+                MetaHelper.setDisplayName(coordinatePicker, ChatColor.GREEN + "Border Coordinate Picker");
+                if (!pInv.addItem(coordinatePicker).isEmpty()) {
+                    p.sendMessage("Please have at least one inventory slot open.");
+                    p.closeInventory();
+                } else {
+                    p.sendMessage(ChatColor.GOLD + "Go to the first corner of your border and left click (using the coordinate picker).");
+                    DataHelper.addAndSave("Infection Border Setup Complete", false);
+                    p.closeInventory();
+                }
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.BLUE + "Test Border")) {
                 if (!(DataHelper.checkBoolean("Infection Border Setup Complete") || DataHelper.checkBoolean("Infection Spawn Setup Complete"))) {
                     p.sendMessage(ChatColor.RED + "Please finish setting up the border and spawn using the '/infection setup' menu.");
-                }
-                else if (!DataHelper.checkBoolean("Infection Border Setup Complete")) {
+                } else if (!DataHelper.checkBoolean("Infection Border Setup Complete")) {
                     p.sendMessage(ChatColor.RED + "Please finish setting up the border using the 'Setup Infection Border' item in the '/infection setup' menu.");
-                }
-                else if (!DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
+                } else if (!DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
                     p.sendMessage(ChatColor.RED + "Please finish setting up the infected spawn location using the 'Setup Infected Spawn Coordinates' item in the '/infection setup' menu.");
-                }
-                else {
+                } else {
                     p.sendMessage(ChatColor.DARK_AQUA + "You will now be randomly teleported a few times within the border you set. If you are teleported outside your set bounds, something is wrong.");
                     HashMap<String, Integer> range = DataHelper.getHashMap("Infection Border Range");
                     if (range == null) {
                         p.sendMessage("Something went wrong. Try re-running the border setup.");
-                    }
-                    else {
+                    } else {
                         for (int a = 0; a < 5; a++) {
                             p.teleport(TeleportUtils.findSafeLocation(range));
                             SleepUtils.three();
@@ -130,15 +122,13 @@ public class ContainerListener implements Listener {
                                 p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
                                 user = p;
                                 readyForPlayerInputOnDisablingTestBorder = true;
-                            }
-                            else {
+                            } else {
                                 p.sendMessage(ChatColor.RED + "It seems the plugin \"World Border 1.15+\" is not installed. This plugin is optional for the core functionalities of Infection, but is required for the physical border. If you would like to disable the physical border, re-do the border setup. Otherwise, install \"World Border 1.15+\" from spigot.org.");
                             }
                         }
+                    }
                 }
-            }
-                }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.AQUA + "Setup Lobby")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.AQUA + "Setup Lobby")) {
                 Inventory pInv = p.getInventory();
                 ItemStack coordinatePicker = new ItemStack(Material.STONE_AXE, 1);
                 MetaHelper.setDisplayName(coordinatePicker, ChatColor.AQUA + "Lobby Coordinate Picker");
@@ -150,8 +140,7 @@ public class ContainerListener implements Listener {
                     DataHelper.addAndSave("Infection Lobby Setup Complete", false);
                     p.closeInventory();
                 }
-            }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.DARK_PURPLE + "Set Options")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.DARK_PURPLE + "Set Options")) {
                 e.setCancelled(true);
                 DataHelper.addIfDoesNotExist("Min Number of Players", 2);
                 DataHelper.addIfDoesNotExist("Max Number of Players", 10);
@@ -167,7 +156,7 @@ public class ContainerListener implements Listener {
                 ItemStack allowChoice = new ItemStack(Material.WRITABLE_BOOK, 1);
                 MetaHelper.setDisplayName(allowChoice, ChatColor.GOLD + "Allow players to choose their role (infected or hider)?");
                 if (DataHelper.checkBoolean("Allow Choice of Role")) {
-                    MetaHelper.setLore(allowChoice,ChatColor.GREEN + "Currently Set to Yes");
+                    MetaHelper.setLore(allowChoice, ChatColor.GREEN + "Currently Set to Yes");
                 } else {
                     MetaHelper.setLore(allowChoice, ChatColor.RED + "Currently Set to No");
                 }
@@ -178,44 +167,37 @@ public class ContainerListener implements Listener {
                 optionsMenu.setItem(8, save);
                 p.openInventory(optionsMenu);
             }
-        }
-        else if (e.getView().getTitle().equals(ChatColor.DARK_PURPLE + "Set Infection Options!")) {
+        } else if (e.getView().getTitle().equals(ChatColor.DARK_PURPLE + "Set Infection Options!")) {
             e.setCancelled(true);
             ItemStack i = e.getCurrentItem();
-            if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Minimum Number of Players")) {
+            if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Minimum Number of Players")) {
                 int amount = i.getAmount();
-                int amountOfMax =  Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount();
+                int amountOfMax = Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount();
                 if (amount > 2 && e.getClick().isLeftClick()) {
                     i.setAmount(amount - 1);
-                }
-                else if (amount < amountOfMax && e.getClick().isRightClick()) {
+                } else if (amount < amountOfMax && e.getClick().isRightClick()) {
                     i.setAmount(amount + 1);
                 }
                 DataHelper.addAndSave("Min Number of Players", i.getAmount());
                 InfectionGame.setMinNumberOfPlayers(i.getAmount());
-            }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Maximum Number of Players")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Maximum Number of Players")) {
                 int amount = i.getAmount();
-                int amountOfMin =  Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount();
+                int amountOfMin = Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount();
                 if (amount > amountOfMin && e.getClick().isLeftClick()) {
                     i.setAmount(amount - 1);
-                }
-                else if (amount < 20 && e.getClick().isRightClick()) {
+                } else if (amount < 20 && e.getClick().isRightClick()) {
                     i.setAmount(amount + 1);
                 }
                 DataHelper.addAndSave("Max Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount());
                 InfectionGame.setMaxNumberOfPlayers(i.getAmount());
-            }
-            else if (MetaHelper.checkDisplayName(i,ChatColor.GOLD + "Allow players to choose their role (infected or hider)?")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Allow players to choose their role (infected or hider)?")) {
                 if (MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No")) {
-                    MetaHelper.setLore(i,ChatColor.GREEN + "Currently Set to Yes");
-                }
-                else {
-                    MetaHelper.setLore(i,ChatColor.RED + "Currently Set to No");
+                    MetaHelper.setLore(i, ChatColor.GREEN + "Currently Set to Yes");
+                } else {
+                    MetaHelper.setLore(i, ChatColor.RED + "Currently Set to No");
                 }
                 DataHelper.addAndSave("Allow Choice of Role", !MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No"));
-            }
-            else if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Click to save!")) {
+            } else if (MetaHelper.checkDisplayName(i, ChatColor.GOLD + "Click to save!")) {
                 DataHelper.addAndSave("Min Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(0)).getAmount());
                 DataHelper.addAndSave("Max Number of Players", Objects.requireNonNull(p.getOpenInventory().getTopInventory().getItem(1)).getAmount());
                 DataHelper.addAndSave("Allow Choice of Role", !MetaHelper.checkLore(i, ChatColor.RED + "Currently Set to No"));

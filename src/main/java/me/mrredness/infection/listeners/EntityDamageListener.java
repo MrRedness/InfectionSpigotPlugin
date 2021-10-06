@@ -9,11 +9,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class EntityDamageListener implements Listener {
+    Infection plugin;
+
     public EntityDamageListener(Infection plugin) {
         this.plugin = plugin;
     }
-
-    Infection plugin;
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void PlayerDamageReceive(EntityDamageByEntityEvent e) {
@@ -22,12 +22,11 @@ public class EntityDamageListener implements Listener {
                 if (InfectionGame.getPlayersInGame().contains(damaged)) {
                     if ((damaged.getHealth() - e.getDamage()) <= 0) {
                         e.setCancelled(true);
-                       InfectionGame.death(damaged);
+                        InfectionGame.death(damaged);
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (e.getEntity() instanceof Player damaged) {
                 if (InfectionGame.getPlayersInGame().contains(damaged)) {
                     e.setCancelled(true);

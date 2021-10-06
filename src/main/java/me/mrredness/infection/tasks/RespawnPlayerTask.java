@@ -41,8 +41,7 @@ public class RespawnPlayerTask extends BukkitRunnable {
         if (infected) {
             //become infected
             new PlayerBecomeRoleTask(true, p).runTask(plugin);
-        }
-        else {
+        } else {
             //become hider
             new PlayerBecomeRoleTask(false, p).runTask(plugin);
         }

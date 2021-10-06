@@ -11,16 +11,17 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ReleaseInfectedCountdown extends BukkitRunnable {
+    static boolean running = true;
+
     public static boolean isRunning() {
         return running;
     }
 
-    static boolean running = true;
     @Override
     public void run() {
         for (Player p : InfectionGame.getPlayersInGame()) {
             if (InfectionGame.getInfected().contains(p.getUniqueId())) {
-                PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30*20, 255, false, false, false);
+                PotionEffect blindness = new PotionEffect(PotionEffectType.BLINDNESS, 30 * 20, 255, false, false, false);
                 new AddPotionEffect(blindness, p).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             }
         }

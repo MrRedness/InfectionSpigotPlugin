@@ -11,6 +11,7 @@ public class RangeHelper {
         int max = Math.max(bound1, bound2);
         return (numberToTest >= min && numberToTest <= max);
     }
+
     public static boolean isSpawnInLocationRange(Location pos1, Location pos2, Location spawn) {
         int pos1x = (int) pos1.getX();
         int pos1y = (int) pos1.getY();
@@ -30,6 +31,7 @@ public class RangeHelper {
 
         return (checkX && checkY && checkZ);
     }
+
     public static HashMap<String, Integer> createCoordinateRange(Location pos1, Location pos2) {
         int pos1x = (int) pos1.getX();
         int pos1y = (int) pos1.getY();
@@ -54,7 +56,6 @@ public class RangeHelper {
         int xCenter = (xMax - xAmp);
         int yCenter = (yMax - yAmp);
         int zCenter = (zMax - zAmp);
-
 
 
         HashMap<String, Integer> range = new HashMap<>();

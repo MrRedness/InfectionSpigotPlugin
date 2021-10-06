@@ -58,17 +58,16 @@ public class UpdateScoreboard extends BukkitRunnable {
                     Score playersLives = objective.getScore(ChatColor.GOLD + "You have: " + numberOfLivesLeft + " lives left.");
                     playersLives.setScore(1);
                     p.setScoreboard(scoreboard);
-                }
-                else {
+                } else {
                     Score playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
                     playersLives.setScore(1);
                     p.setScoreboard(scoreboard);
                 }
             }
-            secondsLeft --;
+            secondsLeft--;
             if (secondsLeft < 0) {
                 secondsLeft = 59;
-                minutesLeft --;
+                minutesLeft--;
             }
             SleepUtils.one();
             objective.unregister();

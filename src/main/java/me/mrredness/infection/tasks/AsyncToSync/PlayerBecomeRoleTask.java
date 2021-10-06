@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerBecomeRoleTask extends BukkitRunnable {
-// allows async task to call becomeHider or becomeInfected
+    // allows async task to call becomeHider or becomeInfected
     boolean Infected;
     Player p;
 
@@ -18,8 +18,7 @@ public class PlayerBecomeRoleTask extends BukkitRunnable {
     public void run() {
         if (Infected) {
             InfectionGame.becomeInfected(p);
-        }
-        else {
+        } else {
             InfectionGame.becomeHider(p);
         }
     }

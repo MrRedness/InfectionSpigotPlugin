@@ -8,7 +8,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class SummonFirework extends BukkitRunnable{
+public class SummonFirework extends BukkitRunnable {
 
     World world;
     Location location;
@@ -22,10 +22,10 @@ public class SummonFirework extends BukkitRunnable{
 
     @Override
     public void run() {
-       Firework firework = world.spawn(location, Firework.class);
-       FireworkMeta fireworkMeta = firework.getFireworkMeta();
-       fireworkMeta.addEffects(FireworkEffect.builder().withColor(colors).build());
-       fireworkMeta.setPower(2);
-       firework.setFireworkMeta(fireworkMeta);
+        Firework firework = world.spawn(location, Firework.class);
+        FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        fireworkMeta.addEffects(FireworkEffect.builder().withColor(colors).build());
+        fireworkMeta.setPower(2);
+        firework.setFireworkMeta(fireworkMeta);
     }
 }

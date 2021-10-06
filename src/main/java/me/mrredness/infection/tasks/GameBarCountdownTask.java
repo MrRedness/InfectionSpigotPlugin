@@ -22,7 +22,7 @@ public class GameBarCountdownTask extends BukkitRunnable {
     static boolean continueRunning = true;
 
 
-    static int secondsLeft = 10*60;
+    static int secondsLeft = 10 * 60;
 
 
     @Override

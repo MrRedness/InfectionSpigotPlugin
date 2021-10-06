@@ -13,6 +13,7 @@ public class PlayerQuitListener implements Listener {
         InfectionGame.leaveGame(e.getPlayer());
         try {
             e.wait(1);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

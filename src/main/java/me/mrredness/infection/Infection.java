@@ -35,8 +35,11 @@ public final class Infection extends JavaPlugin {
         Objects.requireNonNull(getCommand("infection")).setTabCompleter(new InfectionTabCompletion());
         worldBorderEnabled = getServer().getPluginManager().isPluginEnabled("WorldBorder");
         if (worldBorderEnabled) {
-            BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
-        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
+            BorderUtils.removeBorder("Infection Spawn Setup Complete", "Infection Spawn World");
+        }
+        if (worldBorderEnabled) {
+            BorderUtils.removeBorder("Infection Lobby Setup Complete", "Infection Lobby World");
+        }
         getServer().getPluginManager().registerEvents(new ContainerListener(worldBorderEnabled), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
         getServer().getPluginManager().registerEvents(new ChatListener(), this);
@@ -44,10 +47,15 @@ public final class Infection extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EntityDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
     }
+
     @Override
     public void onDisable() {
-        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");}
-        if (worldBorderEnabled) {BorderUtils.removeBorder("Infection Lobby Setup Complete","Infection Lobby World");}
+        if (worldBorderEnabled) {
+            BorderUtils.removeBorder("Infection Spawn Setup Complete", "Infection Spawn World");
+        }
+        if (worldBorderEnabled) {
+            BorderUtils.removeBorder("Infection Lobby Setup Complete", "Infection Lobby World");
+        }
         LobbyBarCountdownTask.removeAll();
         Bukkit.getServer().getScheduler().cancelTasks(this);
         if (InfectionGame.isLobbyStage()) {

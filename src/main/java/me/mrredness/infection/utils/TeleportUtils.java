@@ -5,8 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,13 +14,13 @@ public class TeleportUtils {
 
     public static HashSet<Material> bad_blocks = new HashSet<>();
 
-    static{
+    static {
         bad_blocks.add(Material.LAVA);
         bad_blocks.add(Material.FIRE);
         bad_blocks.add(Material.CACTUS);
     }
 
-    public static Location generateLocation(HashMap<String,Integer> range){
+    public static Location generateLocation(HashMap<String, Integer> range) {
 
         //Generate Random Location
         Random random = new Random();
@@ -54,17 +52,19 @@ public class TeleportUtils {
         randomLocation.setY(y);
         return randomLocation;
     }
-    public static Location findSafeLocation(HashMap<String, Integer> range){
+
+    public static Location findSafeLocation(HashMap<String, Integer> range) {
         Location spawn = (Location) DataHelper.get("Infection Spawn Location");
         Location randomLocation = generateLocation(Objects.requireNonNull(range));
 
-        while (!isLocationSafe(randomLocation, spawn, range)){
+        while (!isLocationSafe(randomLocation, spawn, range)) {
             //Keep looking for a safe location
             randomLocation = generateLocation(range);
         }
         return randomLocation;
     }
-    public static boolean isLocationSafe(Location location, Location spawn, HashMap<String, Integer> range){
+
+    public static boolean isLocationSafe(Location location, Location spawn, HashMap<String, Integer> range) {
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();

@@ -1,11 +1,11 @@
 package me.mrredness.infection;
 
-import me.mrredness.infection.utils.LaunchFirework;
 import me.mrredness.infection.helpers.ConfigHelper;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
 import me.mrredness.infection.tasks.*;
 import me.mrredness.infection.utils.BorderUtils;
+import me.mrredness.infection.utils.LaunchFirework;
 import me.mrredness.infection.utils.TeleportUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -18,26 +18,30 @@ import java.util.*;
 public class InfectionGame {
 
     private static final HashSet<Player> playersInGame = new HashSet<>();
+    private static final HashMap<UUID, Location> playerPreviousLocation = new HashMap<>();
+    private static final HashMap<UUID, ItemStack[]> playerPreviousInventory = new HashMap<>();
+    private static final HashMap<UUID, GameMode> playerPreviousGamemode = new HashMap<>();
+    private static final HashSet<UUID> infected = new HashSet<>();
+    private static final HashSet<UUID> hiders = new HashSet<>();
+    private static final HashSet<UUID> chosenRandom = new HashSet<>();
+    private static final ItemStack[] infectedInv = ConfigHelper.getInventory(true);
+    private static final ItemStack[] hiderInv = ConfigHelper.getInventory(false);
+    private static final HashMap<UUID, Integer> numberOfLives = new HashMap<>();
+    private static final Scoreboard scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
+    private static boolean lobbyStage = true;
+    private static BukkitTask barCountdown;
+    private static Integer minNumberOfPlayers = (Integer) DataHelper.get("Min Number of Players");
+    private static Integer maxNumberOfPlayers = (Integer) DataHelper.get("Max Number of Players");
+    private static boolean worldBorderEnabled;
+    private static Infection plugin;
 
     public static HashSet<Player> getPlayersInGame() {
         return playersInGame;
     }
 
-    private static final HashMap<UUID, Location> playerPreviousLocation = new HashMap<>();
-
-    private static final HashMap<UUID, ItemStack[]> playerPreviousInventory = new HashMap<>();
-
-    private static final HashMap<UUID, GameMode> playerPreviousGamemode = new HashMap<>();
-
-    private static boolean lobbyStage = true;
-
     public static boolean isLobbyStage() {
         return lobbyStage;
     }
-
-    private static BukkitTask barCountdown;
-
-    private static Integer minNumberOfPlayers = (Integer) DataHelper.get("Min Number of Players");
 
     public static Integer getMinNumberOfPlayers() {
         return minNumberOfPlayers;
@@ -47,13 +51,9 @@ public class InfectionGame {
         InfectionGame.minNumberOfPlayers = minNumberOfPlayers;
     }
 
-    private static Integer maxNumberOfPlayers = (Integer) DataHelper.get("Max Number of Players");
-
     public static void setMaxNumberOfPlayers(Integer maxNumberOfPlayers) {
         InfectionGame.maxNumberOfPlayers = maxNumberOfPlayers;
     }
-
-    private static final HashSet<UUID> infected = new HashSet<>();
 
     public static HashSet<UUID> getInfected() {
         return infected;
@@ -69,8 +69,6 @@ public class InfectionGame {
         InfectionGame.infected.remove(p.getUniqueId());
     }
 
-    private static final HashSet<UUID> hiders = new HashSet<>();
-
     public static HashSet<UUID> getHiders() {
         return hiders;
     }
@@ -84,8 +82,6 @@ public class InfectionGame {
     public static void removeFromHider(Player p) {
         InfectionGame.hiders.remove(p.getUniqueId());
     }
-
-    private static final HashSet<UUID> chosenRandom = new HashSet<>();
 
     public static HashSet<UUID> getChosenRandom() {
         return chosenRandom;
@@ -101,22 +97,11 @@ public class InfectionGame {
         InfectionGame.chosenRandom.remove(p.getUniqueId());
     }
 
-    private static final ItemStack[] infectedInv = ConfigHelper.getInventory(true);
-    private static final ItemStack[] hiderInv = ConfigHelper.getInventory(false);
-
-    private static final HashMap<UUID, Integer> numberOfLives = new HashMap<>();
-
     public static HashMap<UUID, Integer> getNumberOfLives() {
         return numberOfLives;
     }
 
-    private static boolean worldBorderEnabled;
-
-    private static Infection plugin;
-
-    private static final Scoreboard scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-
-    public static void heal(Player p){
+    public static void heal(Player p) {
         p.setHealth(20);
         p.setFoodLevel(20);
         p.setSaturation(20);
@@ -243,6 +228,7 @@ public class InfectionGame {
         p.getInventory().setContents(infectedInv);
         heal(p);
     }
+
     public static void becomeInfectedForFirstTime(Player p) {
         becomeInfected(p);
         numberOfLives.put(p.getUniqueId(), 2);
@@ -261,7 +247,8 @@ public class InfectionGame {
         p.getInventory().setContents(hiderInv);
         heal(p);
     }
-    public static void becomeHiderForFirstTime(Player p){
+
+    public static void becomeHiderForFirstTime(Player p) {
         becomeHider(p);
         numberOfLives.put(p.getUniqueId(), 1);
         p.sendMessage(ChatColor.GREEN + "You are a hider. The hunters will be released in 30 seconds to hunt down and kill all the hiders.");
@@ -274,12 +261,11 @@ public class InfectionGame {
         int numberOfLivesLeft = InfectionGame.numberOfLives.get(killed.getUniqueId()) - 1;
         Player killer = killed.getKiller();
         for (Player p : playersInGame) {
-            if (p.equals(killed)){
+            if (p.equals(killed)) {
                 p.sendMessage(ChatColor.RED + "You were killed by " + ChatColor.GOLD + killer.getName());
-            }
-            else if (p.equals(killer)){
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killed.getName());            }
-            else {
+            } else if (p.equals(killer)) {
+                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killed.getName());
+            } else {
                 p.sendMessage(ChatColor.RED + killed.getDisplayName() + ChatColor.DARK_PURPLE + " was killed by " + ChatColor.GOLD + killer.getDisplayName());
             }
         }
@@ -341,7 +327,7 @@ public class InfectionGame {
                     p.getInventory().addItem(chooseRoleOpenInv);
                 }
             }
-            new LaunchFirework( Bukkit.getWorld((String) DataHelper.get("Infection Spawn World")), DataHelper.getHashMap("Infection Border Range"),
+            new LaunchFirework(Bukkit.getWorld((String) DataHelper.get("Infection Spawn World")), DataHelper.getHashMap("Infection Border Range"),
                     7, 1000, new Color[]{Color.RED, Color.BLUE}).runTaskAsynchronously(plugin);
             return true;
         }

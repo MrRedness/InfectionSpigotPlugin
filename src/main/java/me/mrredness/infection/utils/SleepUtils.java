@@ -10,6 +10,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void one() {
         try {
             sleep(1000);
@@ -17,6 +18,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void oneHalf() {
         try {
             sleep(500);
@@ -24,6 +26,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void oneQuarter() {
         try {
             sleep(250);
@@ -31,6 +34,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void three() {
         try {
             sleep(3000);
@@ -38,6 +42,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void five() {
         try {
             sleep(5000);
@@ -45,6 +50,7 @@ public class SleepUtils {
             ex.printStackTrace();
         }
     }
+
     public static void ten() {
         try {
             sleep(10000);

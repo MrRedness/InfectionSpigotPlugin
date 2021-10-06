@@ -14,32 +14,32 @@ public class InfectionSetupData {
     private static FileConfiguration customFile;
 
     //Finds or generates the custom config file
-    public static void setup(){
+    public static void setup() {
         file = new File(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("Infection")).getDataFolder(), ".infection-setup-data.yml");
 
-        if (!file.exists()){
-            try{
+        if (!file.exists()) {
+            try {
                 file.createNewFile();
-            }catch (IOException e){
+            } catch (IOException e) {
                 //owww
             }
         }
         customFile = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static FileConfiguration get(){
+    public static FileConfiguration get() {
         return customFile;
     }
 
-    public static void save(){
-        try{
+    public static void save() {
+        try {
             customFile.save(file);
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Couldn't save file");
         }
     }
 
-    public static void reload(){
+    public static void reload() {
         customFile = YamlConfiguration.loadConfiguration(file);
     }
 

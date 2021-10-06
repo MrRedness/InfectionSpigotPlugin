@@ -1,11 +1,11 @@
 package me.mrredness.infection.commands;
 
-import me.mrredness.infection.helpers.DataHelper;
-import me.mrredness.infection.helpers.MetaHelper;
-import me.mrredness.infection.tasks.LobbyBarCountdownTask;
 import me.mrredness.infection.Infection;
 import me.mrredness.infection.InfectionGame;
+import me.mrredness.infection.helpers.DataHelper;
+import me.mrredness.infection.helpers.MetaHelper;
 import me.mrredness.infection.tasks.AsyncToSync.WaitForSecondAttemptTask;
+import me.mrredness.infection.tasks.LobbyBarCountdownTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,24 +21,25 @@ import java.util.logging.LogRecord;
 
 public class InfectionCommand implements CommandExecutor {
 
+    private static boolean secondTimeRunningForceStart = false;
     private final Infection plugin;
     private final boolean worldBorderEnabled;
-    private static boolean secondTimeRunningForceStart = false;
-
-    public static void setSecondTimeRunningForceStart(boolean secondTimeRunningForceStart) {
-        InfectionCommand.secondTimeRunningForceStart = secondTimeRunningForceStart;
-    }
 
     public InfectionCommand(Infection plugin, boolean worldBorderEnabled) {
         this.plugin = plugin;
         this.worldBorderEnabled = worldBorderEnabled;
     }
 
+    public static void setSecondTimeRunningForceStart(boolean secondTimeRunningForceStart) {
+        InfectionCommand.secondTimeRunningForceStart = secondTimeRunningForceStart;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player p) {
-            if(args.length == 0) {return false;}
-            else if (args[0].equals("join")) {
+            if (args.length == 0) {
+                return false;
+            } else if (args[0].equals("join")) {
             /*    Inventory joinMenu = Bukkit.createInventory(p, 9, "Join Infection!");
                 //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
                 ItemStack joinStack = new ItemStack(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")), 1);
@@ -66,8 +67,7 @@ public class InfectionCommand implements CommandExecutor {
                     return false;
                 }
 
-            }
-            else if (args[0].equals("leave")) {
+            } else if (args[0].equals("leave")) {
                 if (p.hasPermission("infection.joinGame")) {
                     InfectionGame.leaveGame(p);
                     return true;
@@ -75,8 +75,7 @@ public class InfectionCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.joinGame\"");
                     return false;
                 }
-            }
-            else if (args[0].equals("setup")) {
+            } else if (args[0].equals("setup")) {
                 if (p.hasPermission("infection.setup")) {
                     Inventory setupMenu = Bukkit.createInventory(p, 9, "Setup Infection!");
                     //    plugin.logger.log(new LogRecord(Level.INFO, String.valueOf(Material.valueOf(plugin.getConfig().getString("joinMenuJoinItem")))));
@@ -97,8 +96,7 @@ public class InfectionCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.setup\"");
                     return false;
                 }
-            }
-            else if (args[0].equals("forcestart")) {
+            } else if (args[0].equals("forcestart")) {
                 if (p.hasPermission("infection.forceStart")) {
                     if (args.length == 2) {
                         if (!secondTimeRunningForceStart) {
@@ -130,13 +128,11 @@ public class InfectionCommand implements CommandExecutor {
 
                         return true;
                     }
-                }
-                else {
+                } else {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.forceStart\"");
                     return false;
                 }
-            }
-            else if (args[0].equals("endgame")) {
+            } else if (args[0].equals("endgame")) {
                 if (p.hasPermission("infection.endGame")) {
                     if (!InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.")) {
                         p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, the game is not currently running.");
@@ -146,8 +142,9 @@ public class InfectionCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.RED + "You do not have the permission: " + ChatColor.BLUE + "\"infection.endGame\"");
                     return false;
                 }
+            } else {
+                return false;
             }
-            else {return false;}
         } else {
             LogRecord console = new LogRecord(Level.WARNING, "This command can only be run by players.");
             plugin.logger.log(console);

@@ -2,7 +2,10 @@ package me.mrredness.infection.utils;
 
 
 import me.mrredness.infection.tasks.AsyncToSync.SummonFirework;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Firework;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,6 +13,7 @@ import java.util.HashMap;
 
 public class LaunchFirework extends BukkitRunnable {
 
+    static Firework firework;
     World world;
     HashMap<String, Integer> locationRange;
     Location location;
@@ -17,12 +21,6 @@ public class LaunchFirework extends BukkitRunnable {
     int delayBetweenLaunchesInMilliseconds;
     Color[] colors;
     boolean range;
-
-    public static void setFirework(Firework firework) {
-        LaunchFirework.firework = firework;
-    }
-
-    static Firework firework;
 
     public LaunchFirework(World world, HashMap<String, Integer> locationRange, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors) {
         this.world = world;
@@ -42,16 +40,21 @@ public class LaunchFirework extends BukkitRunnable {
         range = false;
     }
 
-    public static void launch(World world, HashMap<String, Integer> locationRange, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors){
+    public static void setFirework(Firework firework) {
+        LaunchFirework.firework = firework;
+    }
+
+    public static void launch(World world, HashMap<String, Integer> locationRange, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors) {
         while (numberOfFireworks > 0) {
-            new SummonFirework(world,TeleportUtils.findSafeLocation(locationRange),colors).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
+            new SummonFirework(world, TeleportUtils.findSafeLocation(locationRange), colors).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             numberOfFireworks--;
             SleepUtils.wait(delayBetweenLaunchesInMilliseconds);
         }
     }
-    public static void launch(World world, Location location, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors){
+
+    public static void launch(World world, Location location, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors) {
         while (numberOfFireworks > 0) {
-            new SummonFirework(world,location,colors).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
+            new SummonFirework(world, location, colors).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             numberOfFireworks--;
             SleepUtils.wait(delayBetweenLaunchesInMilliseconds);
         }
@@ -61,8 +64,7 @@ public class LaunchFirework extends BukkitRunnable {
     public void run() {
         if (range) {
             launch(world, locationRange, numberOfFireworks, delayBetweenLaunchesInMilliseconds, colors);
-        }
-        else {
+        } else {
             launch(world, location, numberOfFireworks, delayBetweenLaunchesInMilliseconds, colors);
         }
     }

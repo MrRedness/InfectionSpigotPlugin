@@ -1,13 +1,12 @@
 package me.mrredness.infection.listeners;
 
+import me.mrredness.infection.helpers.DataHelper;
+import me.mrredness.infection.utils.BorderUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-import me.mrredness.infection.utils.BorderUtils;
-import me.mrredness.infection.helpers.DataHelper;
 
 
 public class ChatListener implements Listener {
@@ -30,11 +29,10 @@ public class ChatListener implements Listener {
                     DataHelper.addAndSave("Infection Border Setup Complete", true);
                     p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
                 } else {
-                    p.sendMessage(ChatColor.RED +"Please use either yes or no.");
+                    p.sendMessage(ChatColor.RED + "Please use either yes or no.");
                 }
             }
-        }
-        else if (PlayerInteractListener.readyForPlayerInputOnLobbyBorder) {
+        } else if (PlayerInteractListener.readyForPlayerInputOnLobbyBorder) {
             Player p = e.getPlayer();
             String m = e.getMessage();
             e.setCancelled(true);
@@ -51,23 +49,22 @@ public class ChatListener implements Listener {
                     p.sendMessage(ChatColor.GREEN + "Ok, lobby setup is complete!");
                     p.getInventory().remove(PlayerInteractListener.setupItem);
                 } else {
-                    p.sendMessage(ChatColor.RED +"Please use either yes or no.");
+                    p.sendMessage(ChatColor.RED + "Please use either yes or no.");
                 }
             }
-        }
-        else if (ContainerListener.readyForPlayerInputOnDisablingTestBorder) {
+        } else if (ContainerListener.readyForPlayerInputOnDisablingTestBorder) {
             Player p = e.getPlayer();
             String m = e.getMessage();
             e.setCancelled(true);
             if (p.equals(ContainerListener.user)) {
                 if (m.equalsIgnoreCase("end") || m.equalsIgnoreCase("e")) {
                     ContainerListener.readyForPlayerInputOnDisablingTestBorder = false;
-                    BorderUtils.removeBorder("Infection Spawn Setup Complete","Infection Spawn World");
+                    BorderUtils.removeBorder("Infection Spawn Setup Complete", "Infection Spawn World");
                     p.sendMessage(ChatColor.GREEN + "Ok, border is down!");
                 }
 
             }
         }
     }
-    
+
 }
