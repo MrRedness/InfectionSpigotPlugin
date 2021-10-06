@@ -1,4 +1,4 @@
-package me.mrredness.infection.tasks;
+package me.mrredness.infection.tasks.async;
 
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.StartGameTask;

@@ -1,4 +1,4 @@
-package me.mrredness.infection.tasks;
+package me.mrredness.infection.tasks.async;
 
 import me.mrredness.infection.tasks.AsyncToSync.PlayerBecomeRoleTask;
 import me.mrredness.infection.tasks.AsyncToSync.PlayerChangeGamemodeTask;
@@ -32,7 +32,12 @@ public class RespawnPlayerTask extends BukkitRunnable {
         if (infectedForFirstTime) {
             p.sendMessage(ChatColor.RED + "You are now infected.");
         }
-        p.sendMessage(ChatColor.LIGHT_PURPLE + "You have " + numberOfLivesLeft + " lives left.");
+        if (numberOfLivesLeft > 1) {
+            p.sendMessage(ChatColor.LIGHT_PURPLE + "You have " + numberOfLivesLeft + " lives left.");
+        }
+        else {
+            p.sendMessage(ChatColor.LIGHT_PURPLE + "You have 1 life left.");
+        }
         while (numberOfSecondsLeft > 0) {
             p.sendMessage(ChatColor.GREEN + String.valueOf(numberOfSecondsLeft) + " seconds left to respawn.");
             SleepUtils.one();

@@ -1,10 +1,10 @@
 package me.mrredness.infection;
 
+import me.mrredness.infection.tasks.async.*;
 import me.mrredness.infection.utils.LaunchFirework;
 import me.mrredness.infection.helpers.ConfigHelper;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
-import me.mrredness.infection.tasks.*;
 import me.mrredness.infection.utils.BorderUtils;
 import me.mrredness.infection.utils.TeleportUtils;
 import org.bukkit.*;

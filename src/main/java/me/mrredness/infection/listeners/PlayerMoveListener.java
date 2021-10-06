@@ -1,7 +1,7 @@
 package me.mrredness.infection.listeners;
 
 import me.mrredness.infection.InfectionGame;
-import me.mrredness.infection.tasks.ReleaseInfectedCountdown;
+import me.mrredness.infection.tasks.async.ReleaseInfectedCountdown;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

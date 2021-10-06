@@ -2,7 +2,7 @@ package me.mrredness.infection.commands;
 
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
-import me.mrredness.infection.tasks.LobbyBarCountdownTask;
+import me.mrredness.infection.tasks.async.LobbyBarCountdownTask;
 import me.mrredness.infection.Infection;
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.tasks.AsyncToSync.WaitForSecondAttemptTask;
