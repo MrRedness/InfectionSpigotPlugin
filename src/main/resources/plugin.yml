@@ -8,3 +8,20 @@ commands:
   infection:
     description: 'Join a round of infection or setup the plugin for first use.'
     usage: "Usage: /<command> [join | leave | setup | forcestart <seconds>]"
+permissions:
+  infection.*:
+    description: 'All Infection Permissions (only grant to moderators)'
+    default: op
+    children:
+        infection.joinGame: true
+        infection.setup: true
+        infection.forceStart: true
+  infection.joinGame:
+    description: 'Join a round of infection'
+    default: true
+  infection.setup:
+    description: 'Setup Infection Settings, Lobby, and Arena'
+    default: op
+  infection.forceStart:
+    description: 'Force start a game of infection early (skip countdown and/or player limit)'
+    default: op
