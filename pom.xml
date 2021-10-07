@@ -6,7 +6,7 @@
 
     <groupId>me.MrRedness</groupId>
     <artifactId>Infection</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>Alpha-1.0</version>
     <packaging>jar</packaging>
 
     <name>Infection</name>

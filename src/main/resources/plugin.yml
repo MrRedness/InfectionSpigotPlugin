@@ -1,5 +1,5 @@
 name: Infection
-version: 'Alpha-1.0'
+version: '${project.version}'
 main: me.mrredness.infection.Infection
 api-version: 1.17
 description: A Minecraft version of the popular kid's game.

@@ -1,7 +1,9 @@
 package me.mrredness.infection.tasks;
 
 import me.mrredness.infection.InfectionGame;
+import me.mrredness.infection.tasks.AsyncToSync.EndGame;
 import me.mrredness.infection.utils.SleepUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -79,7 +81,7 @@ public class UpdateScoreboard extends BukkitRunnable {
            // Score blank5 = objective.getScore("");
            // blank5.setScore(1);
             if (minutesLeft < 0) {
-                InfectionGame.endGame(ChatColor.GREEN + "Time ran out. Hiders win!", true);
+                new EndGame(ChatColor.GREEN + "Time ran out. Hiders win!", true).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             }
             objective.unregister();
         }
