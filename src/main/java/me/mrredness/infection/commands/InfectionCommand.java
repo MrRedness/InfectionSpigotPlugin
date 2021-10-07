@@ -49,14 +49,17 @@ public class InfectionCommand implements CommandExecutor {
             */
                 if (p.hasPermission("infection.joinGame")) {
                     if (!(DataHelper.checkBoolean("Infection Border Setup Complete") || DataHelper.checkBoolean("Infection Spawn Setup Complete") || DataHelper.checkBoolean("Infection Lobby Setup Complete") || DataHelper.checkBoolean("Infection Options Setup Complete"))) {
-                        p.sendMessage(ChatColor.RED + "Please finish setting up the border and spawn using the '/infection setup' menu.");
+                        p.sendMessage(ChatColor.RED + "Please finish setting up the game using the '/infection setup' menu.");
                     } else if (!DataHelper.checkBoolean("Infection Border Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the border using the 'Setup Infection Border' item in the '/infection setup' menu.");
                     } else if (!DataHelper.checkBoolean("Infection Spawn Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the infected spawn location using the 'Setup Infected Spawn Coordinates' item in the '/infection setup' menu.");
                     } else if (!DataHelper.checkBoolean("Infection Lobby Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
-                    } else {
+                    } else if (!DataHelper.checkBoolean("Infection Options Setup Complete")) {
+                        p.sendMessage(ChatColor.RED + "Please finish setting up the options using the 'Setup Options' item in the '/infection setup' menu.");
+                    }
+                    else {
                         InfectionGame.joinGame(p, plugin);
                     }
                     return true;

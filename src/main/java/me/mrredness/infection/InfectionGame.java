@@ -11,6 +11,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
@@ -160,10 +161,15 @@ public class InfectionGame {
     public static void leaveGame(Player p) {
         if (playersInGame.contains(p)) {
             playersInGame.remove(p);
+            hiders.remove(p.getUniqueId());
+            infected.remove(p.getUniqueId());
             p.teleport(playerPreviousLocation.get(p.getUniqueId()));
             playerPreviousLocation.remove(p.getUniqueId());
             p.getInventory().clear();
             p.getInventory().setContents(playerPreviousInventory.get(p.getUniqueId()));
+            for (PotionEffect effect : p.getActivePotionEffects()) {
+                p.removePotionEffect(effect.getType());
+            }
             p.setDisplayName(p.getPlayerListName());
             p.setGameMode(playerPreviousGamemode.get(p.getUniqueId()));
             p.setInvisible(false);
@@ -205,11 +211,13 @@ public class InfectionGame {
                 becomeInfectedForFirstTime(p);
             } else if (hiders.contains(p.getUniqueId())) {
                 becomeHiderForFirstTime(p);
-            } else if ((getInfected().size() / (double) playersInGame.size()) >= 0.5) {
-                becomeHiderForFirstTime(p);
-            } else if ((getHiders().size() / (double) playersInGame.size()) >= 0.5) {
+
+            } else if (((getHiders().size() + 1) / (double) playersInGame.size()) > 0.7) {
                 becomeInfectedForFirstTime(p);
-            } else if (new Random().nextBoolean()) {
+            }
+            else if (((getInfected().size() + 1) / (double) playersInGame.size()) > 0.5) {
+                becomeHiderForFirstTime(p);
+            }  else if (new Random().nextBoolean()) {
                 becomeInfectedForFirstTime(p);
             } else {
                 becomeHiderForFirstTime(p);
@@ -328,11 +336,20 @@ public class InfectionGame {
             chosenRandom.clear();
             numberOfLives.clear();
             BorderUtils.removeBorder("Game");
+            GameBarCountdownTask.removeBar();
 
             for (Player p : playersInGame) {
                 p.sendMessage(reason);
                 p.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
                 p.getInventory().clear();
+                p.setInvulnerable(false);
+                p.setInvisible(false);
+                p.setHealth(20);
+                p.setSaturation(20);
+                p.setFoodLevel(20);
+                for (PotionEffect effect : p.getActivePotionEffects()) {
+                    p.removePotionEffect(effect.getType());
+                }
                 p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
                 BorderUtils.setBorder("Lobby");
                 if (DataHelper.checkBoolean("Allow Choice of Role")) {

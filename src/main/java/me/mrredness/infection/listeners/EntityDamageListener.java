@@ -43,7 +43,7 @@ public class EntityDamageListener implements Listener {
                         if ((InfectionGame.getHiders().contains(damagerPlayer.getUniqueId()) && InfectionGame.getHiders().contains(damaged.getUniqueId())) ||
                                 (InfectionGame.getInfected().contains(damagerPlayer.getUniqueId()) && InfectionGame.getInfected().contains(damaged.getUniqueId()))) {
                             e.setCancelled(true);
-                        } else if ((!e.isCancelled()) && ((damaged.getHealth() - e.getDamage()) <= 0)) {
+                        } else if ((!e.isCancelled()) && ((damaged.getHealth() - e.getFinalDamage()) <= 0)) {
                             e.setCancelled(true);
                             InfectionGame.death(damaged, damagerPlayer, damagerName);
                         }

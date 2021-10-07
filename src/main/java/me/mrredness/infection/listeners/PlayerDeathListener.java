@@ -14,14 +14,14 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 public class PlayerDeathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
-        Player p = e.getEntity().getPlayer();
-        if (InfectionGame.getPlayersInGame().contains(p)) {
+        Player died = e.getEntity().getPlayer();
+        if (InfectionGame.getPlayersInGame().contains(died)) {
             e.setKeepLevel(true);
             if (InfectionGame.isLobbyStage()) {
                 e.setKeepInventory(true);
             }
             e.getDrops().clear();
-            p.spigot().respawn();
+            died.spigot().respawn();
         }
     }
     @EventHandler

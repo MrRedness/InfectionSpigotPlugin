@@ -53,6 +53,7 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
         playersInGame = InfectionGame.getPlayersInGame();
         continueRunning = true;
         while (playersInGame.size() > 0 && continueRunning) {
+            SleepUtils.one();
             playersInGame = InfectionGame.getPlayersInGame();
             numberOfMorePlayersNeeded = minimumNumberOfPlayers - playersInGame.size();
             countdownBar.removeAll();
@@ -78,7 +79,6 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
                 numberOfSecondsUntilStart = 60;
                 countdownBar.setProgress(1);
             }
-            SleepUtils.one();
         }
         countdownBar.removeAll();
         super.cancel();

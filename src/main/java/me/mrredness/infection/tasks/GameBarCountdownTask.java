@@ -33,6 +33,7 @@ public class GameBarCountdownTask extends BukkitRunnable {
     @Override
     public void run() {
         playersInGame = InfectionGame.getPlayersInGame();
+        continueRunning = true;
         while (playersInGame.size() > 0 && continueRunning && !InfectionGame.isLobbyStage()) {
             playersInGame = InfectionGame.getPlayersInGame();
             double minutesLeft = (double) secondsLeft / 60;
