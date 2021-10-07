@@ -11,7 +11,7 @@ public class PlayerMoveListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if (ReleaseInfectedCountdown.isRunning()) {
+        if (ReleaseInfectedCountdown.isRunning() && !InfectionGame.isLobbyStage()) {
             if (InfectionGame.getInfected().contains(p.getUniqueId())) {
                 e.setCancelled(true);
             }

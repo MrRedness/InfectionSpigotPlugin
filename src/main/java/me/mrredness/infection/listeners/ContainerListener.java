@@ -28,11 +28,6 @@ public class ContainerListener implements Listener {
     //  }
     static boolean readyForPlayerInputOnDisablingTestBorder = false;
     static Player user;
-    boolean worldBorderEnabled;
-
-    public ContainerListener(boolean worldBorderEnabled) {
-        this.worldBorderEnabled = worldBorderEnabled;
-    }
 
     @EventHandler
     public void onMenuClick(InventoryClickEvent e) {
@@ -117,8 +112,8 @@ public class ContainerListener implements Listener {
                         }
                         if (DataHelper.checkBoolean("Infection Physical Border")) {
                             p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
-                            if (worldBorderEnabled) {
-                                BorderUtils.setBorder("Infection Border Range", "Infection Spawn World");
+                            if (Bukkit.getServer().getPluginManager().isPluginEnabled("WorldBorder")) {
+                                BorderUtils.setBorder("Game");
                                 p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
                                 user = p;
                                 readyForPlayerInputOnDisablingTestBorder = true;

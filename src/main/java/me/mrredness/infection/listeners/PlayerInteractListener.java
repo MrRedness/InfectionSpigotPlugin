@@ -1,6 +1,7 @@
 package me.mrredness.infection.listeners;
 
 import me.mrredness.infection.InfectionGame;
+import me.mrredness.infection.InfectionSetupData;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
 import me.mrredness.infection.helpers.RangeHelper;
@@ -32,51 +33,44 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (Objects.requireNonNull(e.getItem()).getType().equals(Material.MAP)) {
-            try {
-                eTitle = e.getItem().getItemMeta().getDisplayName();
-            } catch (NullPointerException exception) {
-                eTitle = "";
+        try {
+            eTitle = e.getItem().getItemMeta().getDisplayName();
+        } catch (NullPointerException exception) {
+            eTitle = "";
+        }
+        if (eTitle.equals(ChatColor.AQUA + "Choose your role in Infection!")) {
+            e.setCancelled(true);
+            Player p = e.getPlayer();
+            Inventory chooseRoleInv = Bukkit.createInventory(p, 9, ChatColor.AQUA + "Choose your role in Infection!");
+            ItemStack infected = new ItemStack(Material.DIAMOND_SWORD, 1);
+            MetaHelper.setDisplayName(infected, ChatColor.RED + "Infected");
+            String numberOfInfected = String.valueOf(InfectionGame.getInfected().size());
+            if (numberOfInfected.equals("1")) {
+                MetaHelper.setLore(infected, (ChatColor.BLUE + "1 player"));
+            } else {
+                MetaHelper.setLore(infected, (ChatColor.BLUE + numberOfInfected + " players"));
             }
-            if (eTitle.equals(ChatColor.AQUA + "Choose your role in Infection!")) {
-                e.setCancelled(true);
-                Player p = e.getPlayer();
-                Inventory chooseRoleInv = Bukkit.createInventory(p, 9, ChatColor.AQUA + "Choose your role in Infection!");
-                ItemStack infected = new ItemStack(Material.DIAMOND_SWORD, 1);
-                MetaHelper.setDisplayName(infected, ChatColor.RED + "Infected");
-                String numberOfInfected = String.valueOf(InfectionGame.getInfected().size());
-                if (numberOfInfected.equals("1")) {
-                    MetaHelper.setLore(infected, (ChatColor.BLUE + "1 player"));
-                } else {
-                    MetaHelper.setLore(infected, (ChatColor.BLUE + numberOfInfected + " players"));
-                }
-                ItemStack hider = new ItemStack(Material.FEATHER, 1);
-                MetaHelper.setDisplayName(hider, ChatColor.GREEN + "Hider");
-                String numberOfHiders = String.valueOf(InfectionGame.getHiders().size());
-                if (numberOfHiders.equals("1")) {
-                    MetaHelper.setLore(hider, (ChatColor.BLUE + "1 player"));
-                } else {
-                    MetaHelper.setLore(hider, (ChatColor.BLUE + numberOfHiders + " players"));
-                }
-                ItemStack random = new ItemStack(Material.ENCHANTED_BOOK, 1);
-                MetaHelper.setDisplayName(random, ChatColor.BLUE + "Random Role");
-                String numberOfRandom = String.valueOf(InfectionGame.getChosenRandom().size());
-                if (numberOfRandom.equals("1")) {
-                    MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + "1 player"));
-                } else {
-                    MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + numberOfRandom + " players"));
-                }
-                chooseRoleInv.setItem(1, infected);
-                chooseRoleInv.setItem(4, hider);
-                chooseRoleInv.setItem(7, random);
-                p.openInventory(chooseRoleInv);
+            ItemStack hider = new ItemStack(Material.FEATHER, 1);
+            MetaHelper.setDisplayName(hider, ChatColor.GREEN + "Hider");
+            String numberOfHiders = String.valueOf(InfectionGame.getHiders().size());
+            if (numberOfHiders.equals("1")) {
+                MetaHelper.setLore(hider, (ChatColor.BLUE + "1 player"));
+            } else {
+                MetaHelper.setLore(hider, (ChatColor.BLUE + numberOfHiders + " players"));
             }
+            ItemStack random = new ItemStack(Material.ENCHANTED_BOOK, 1);
+            MetaHelper.setDisplayName(random, ChatColor.BLUE + "Random Role");
+            String numberOfRandom = String.valueOf(InfectionGame.getChosenRandom().size());
+            if (numberOfRandom.equals("1")) {
+                MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + "1 player"));
+            } else {
+                MetaHelper.setLore(random, (ChatColor.DARK_PURPLE + numberOfRandom + " players"));
+            }
+            chooseRoleInv.setItem(1, infected);
+            chooseRoleInv.setItem(4, hider);
+            chooseRoleInv.setItem(7, random);
+            p.openInventory(chooseRoleInv);
         } else if (e.getClickedBlock() != null) {
-            try {
-                eTitle = e.getItem().getItemMeta().getDisplayName();
-            } catch (NullPointerException exception) {
-                eTitle = "";
-            }
             if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                 if (eTitle.equals(ChatColor.DARK_AQUA + "Spawn Coordinate Picker")) {
                     e.setCancelled(true);
@@ -93,7 +87,7 @@ public class PlayerInteractListener implements Listener {
                 } else if (eTitle.equals(ChatColor.AQUA + "Lobby Coordinate Picker")) {
                     e.setCancelled(true);
                     Player p = e.getPlayer();
-                    Location clickBlock = e.getClickedBlock().getLocation();
+                    Location clickBlock = e.getClickedBlock().getLocation().add(0, 1, 0);
                     String clickCoords = clickBlock.getBlockX() + ", " + clickBlock.getBlockY() + ", " + clickBlock.getBlockZ();
                     String clickWorld = Objects.requireNonNull(clickBlock.getWorld()).getName();
                     if (readyForPlayerToSetLobbyBorder) {
@@ -192,6 +186,9 @@ public class PlayerInteractListener implements Listener {
                             DataHelper.addAndSave("Infection Lobby Border pos2 Location", clickBlock);
                             HashMap<String, Integer> range = RangeHelper.createCoordinateRange(clickBlock, otherBorderBlock);
                             DataHelper.addAndSave("Infection Lobby Border Range", range);
+                            DataHelper.addAndSave("Infection Lobby Setup Complete", true);
+                            InfectionSetupData.save();
+                            InfectionSetupData.reload();
                             p.getInventory().remove(e.getItem());
                             atLeastOneLobbyBorderPositionSet = false;
                             readyForPlayerToSetLobbyBorder = false;

@@ -24,11 +24,11 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
 
     static boolean forceStart = false;
     static int numberOfSecondsUntilStart = 60;
-    static int numberOfMorePlayersNeeded;
-    static int minimumNumberOfPlayers;
+    int numberOfMorePlayersNeeded;
+    int minimumNumberOfPlayers;
 
     public LobbyBarCountdownTask(int minimumNumberOfPlayers) {
-        LobbyBarCountdownTask.minimumNumberOfPlayers = minimumNumberOfPlayers;
+        this.minimumNumberOfPlayers = minimumNumberOfPlayers;
     }
 
     public static void setForceStart(boolean forceStart) {
@@ -39,7 +39,7 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
         LobbyBarCountdownTask.numberOfSecondsUntilStart = numberOfSecondsUntilStart;
     }
 
-    public static void removeAll() {
+    public static void removeBar() {
         countdownBar.removeAll();
         continueRunning = false;
     }
@@ -50,6 +50,8 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
 
     @Override
     public void run() {
+        playersInGame = InfectionGame.getPlayersInGame();
+        continueRunning = true;
         while (playersInGame.size() > 0 && continueRunning) {
             playersInGame = InfectionGame.getPlayersInGame();
             numberOfMorePlayersNeeded = minimumNumberOfPlayers - playersInGame.size();
@@ -58,19 +60,23 @@ public class LobbyBarCountdownTask extends BukkitRunnable {
                 countdownBar.addPlayer(p);
             }
             if (numberOfMorePlayersNeeded < 1 || forceStart) {
-                countdownBar.setTitle(BarColor.YELLOW + "Starting in " + BarColor.BLUE + numberOfSecondsUntilStart + " seconds!");
+                countdownBar.setTitle("Starting in " + numberOfSecondsUntilStart + " seconds!");
                 countdownBar.setProgress((double) numberOfSecondsUntilStart / 60);
                 numberOfSecondsUntilStart--;
                 if (numberOfSecondsUntilStart == 0) {
-                    removeAll();
+                    removeBar();
+                    forceStart = false;
+                    numberOfSecondsUntilStart = 60;
                     new StartGameTask().runTask(Bukkit.getServer().getPluginManager().getPlugin("Infection"));
                 }
             } else if (numberOfMorePlayersNeeded == 1) {
                 countdownBar.setTitle(ChatColor.RED + "Currently waiting for " + 1 + " more player.");
                 numberOfSecondsUntilStart = 60;
+                countdownBar.setProgress(1);
             } else {
                 countdownBar.setTitle(BarColor.YELLOW + "Currently waiting for " + BarColor.BLUE + numberOfMorePlayersNeeded + BarColor.YELLOW + " more players.");
                 numberOfSecondsUntilStart = 60;
+                countdownBar.setProgress(1);
             }
             SleepUtils.one();
         }

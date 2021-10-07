@@ -10,6 +10,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UpdateScoreboard extends BukkitRunnable {
@@ -24,6 +25,9 @@ public class UpdateScoreboard extends BukkitRunnable {
         int minutesLeft = 10;
         int secondsLeft = 0;
         while (!InfectionGame.isLobbyStage()) {
+            if (scoreboard.getObjective("Infection") != null) {
+                Objects.requireNonNull(scoreboard.getObjective("Infection")).unregister();
+            }
             Objective objective = scoreboard.registerNewObjective("Infection", "dummy", ChatColor.GOLD + "Infection!");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             int hiderLives = 0;
@@ -52,17 +56,19 @@ public class UpdateScoreboard extends BukkitRunnable {
             blank2.setScore(2);
 
 
-            for (Player p : InfectionGame.getPlayersInGame()) {
+            /*for (Player p : InfectionGame.getPlayersInGame()) {
                 int numberOfLivesLeft = InfectionGame.getNumberOfLives().get(p.getUniqueId());
+                Score playersLives;
                 if (numberOfLivesLeft > 1) {
-                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have: " + numberOfLivesLeft + " lives left.");
-                    playersLives.setScore(1);
-                    p.setScoreboard(scoreboard);
+                    playersLives = objective.getScore(ChatColor.GOLD + "You have " + numberOfLivesLeft + " lives left.");
                 } else {
-                    Score playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
-                    playersLives.setScore(1);
-                    p.setScoreboard(scoreboard);
+                    playersLives = objective.getScore(ChatColor.GOLD + "You have 1 life left.");
                 }
+                playersLives.setScore(1);
+                p.setScoreboard(scoreboard);
+            } */
+            for (Player p : InfectionGame.getPlayersInGame()) {
+                p.setScoreboard(scoreboard);
             }
             secondsLeft--;
             if (secondsLeft < 0) {
@@ -70,10 +76,12 @@ public class UpdateScoreboard extends BukkitRunnable {
                 minutesLeft--;
             }
             SleepUtils.one();
-            objective.unregister();
+           // Score blank5 = objective.getScore("");
+           // blank5.setScore(1);
             if (minutesLeft < 0) {
-                InfectionGame.endGame(ChatColor.GREEN + "Time ran out. Hiders win!");
+                InfectionGame.endGame(ChatColor.GREEN + "Time ran out. Hiders win!", true);
             }
+            objective.unregister();
         }
     }
 }

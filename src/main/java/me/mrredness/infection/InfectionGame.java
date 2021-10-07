@@ -8,9 +8,9 @@ import me.mrredness.infection.utils.BorderUtils;
 import me.mrredness.infection.utils.LaunchFirework;
 import me.mrredness.infection.utils.TeleportUtils;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
@@ -29,10 +29,8 @@ public class InfectionGame {
     private static final HashMap<UUID, Integer> numberOfLives = new HashMap<>();
     private static final Scoreboard scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
     private static boolean lobbyStage = true;
-    private static BukkitTask barCountdown;
     private static Integer minNumberOfPlayers = (Integer) DataHelper.get("Min Number of Players");
     private static Integer maxNumberOfPlayers = (Integer) DataHelper.get("Max Number of Players");
-    private static boolean worldBorderEnabled;
     private static Infection plugin;
 
     public static HashSet<Player> getPlayersInGame() {
@@ -107,8 +105,7 @@ public class InfectionGame {
         p.setSaturation(20);
     }
 
-    public static void joinGame(Player p, boolean worldBorderEnabled, Infection plugin) {
-        InfectionGame.worldBorderEnabled = worldBorderEnabled;
+    public static void joinGame(Player p, Infection plugin) {
         InfectionGame.plugin = plugin;
         if (!playersInGame.contains(p)) {
             if (!lobbyStage) {
@@ -122,25 +119,32 @@ public class InfectionGame {
                 p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
                 p.getInventory().clear();
                 p.setGameMode(GameMode.ADVENTURE);
+                p.setDisplayName(p.getName());
                 heal(p);
                 playersInGame.add(p);
                 p.sendMessage(ChatColor.GREEN + "Welcome to Infection!");
-                int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
+                int numberOfMorePlayersNeeded = -1 * (playersInGame.size() - minNumberOfPlayers);
                 if (numberOfMorePlayersNeeded == 1) {
                     for (Player players : playersInGame) {
                         players.sendMessage(ChatColor.AQUA + randomJoinMessage(p));
                         players.sendMessage(ChatColor.GOLD + "We now need " + ChatColor.BLUE + 1 + ChatColor.GOLD + " more player.");
                     }
-                } else {
+                } else if (numberOfMorePlayersNeeded > 0){
                     for (Player players : playersInGame) {
                         players.sendMessage(ChatColor.GOLD + "We now need " + ChatColor.BLUE + numberOfMorePlayersNeeded + ChatColor.GOLD + " more players.");
                     }
+                } else if (numberOfMorePlayersNeeded == 0) {
+                    for (Player players : playersInGame) {
+                        players.sendMessage(ChatColor.GOLD + "We now have enough players!");
+                    }
+                } else {
+                    for (Player players : playersInGame) {
+                        players.sendMessage(ChatColor.GOLD + "We now have " + ChatColor.BLUE + playersInGame.size() + ChatColor.GOLD + " out of " + ChatColor.LIGHT_PURPLE + maxNumberOfPlayers + ChatColor.GOLD + " max players.");
+                    }
                 }
                 if (playersInGame.size() == 1) {
-                    if (worldBorderEnabled) {
-                        BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
-                    }
-                    barCountdown = new LobbyBarCountdownTask(minNumberOfPlayers).runTaskAsynchronously(plugin);
+                    BorderUtils.setBorder("Lobby");
+                    new LobbyBarCountdownTask(minNumberOfPlayers).runTaskAsynchronously(plugin);
                 }
                 if (DataHelper.checkBoolean("Allow Choice of Role")) {
                     ItemStack chooseRoleOpenInv = new ItemStack(Material.MAP, 1);
@@ -160,15 +164,16 @@ public class InfectionGame {
             playerPreviousLocation.remove(p.getUniqueId());
             p.getInventory().clear();
             p.getInventory().setContents(playerPreviousInventory.get(p.getUniqueId()));
-            p.setDisplayName(p.getName());
+            p.setDisplayName(p.getPlayerListName());
             p.setGameMode(playerPreviousGamemode.get(p.getUniqueId()));
+            p.setInvisible(false);
+            p.setInvulnerable(false);
             heal(p);
             playerPreviousInventory.remove(p.getUniqueId());
             LobbyBarCountdownTask.removePlayer(p);
             p.sendMessage(ChatColor.GREEN + "Bye! Play again soon!");
             if (playersInGame.size() == 0) {
-                BorderUtils.removeBorder("Infection Lobby Border Range", "Infection Lobby World");
-                barCountdown.cancel();
+                BorderUtils.removeBorder("Lobby");
             }
         } else {
             p.sendMessage(ChatColor.RED + "You are not currently in a game");
@@ -194,29 +199,27 @@ public class InfectionGame {
 
     public static void startGame() {
         lobbyStage = false;
-        if (worldBorderEnabled) {
-            BorderUtils.removeBorder("Infection Lobby Setup Complete", "Infection Lobby World");
-        }
+        BorderUtils.removeBorder("Lobby");
         for (Player p : playersInGame) {
             if (infected.contains(p.getUniqueId())) {
                 becomeInfectedForFirstTime(p);
             } else if (hiders.contains(p.getUniqueId())) {
                 becomeHiderForFirstTime(p);
             } else if ((getInfected().size() / (double) playersInGame.size()) >= 0.5) {
-                becomeHider(p);
+                becomeHiderForFirstTime(p);
             } else if ((getHiders().size() / (double) playersInGame.size()) >= 0.5) {
                 becomeInfectedForFirstTime(p);
             } else if (new Random().nextBoolean()) {
                 becomeInfectedForFirstTime(p);
-
             } else {
                 becomeHiderForFirstTime(p);
-
             }
         }
+        BorderUtils.setBorder("Game");
         new UpdateScoreboard(scoreboard).runTaskAsynchronously(plugin);
         new EndGameWhenOneTeamIsEliminated().runTaskAsynchronously(plugin);
         new ReleaseInfectedCountdown().runTaskAsynchronously(plugin);
+        new GameBarCountdownTask().runTaskAsynchronously(plugin);
     }
 
     public static void becomeInfected(Player p) {
@@ -232,6 +235,7 @@ public class InfectionGame {
     public static void becomeInfectedForFirstTime(Player p) {
         becomeInfected(p);
         numberOfLives.put(p.getUniqueId(), 2);
+        p.teleport(p.getLocation().subtract(0,2,0));
         p.sendMessage(ChatColor.RED + "You are INFECTED. You will be released in 30 seconds to hunt down and kill all the hiders.");
         p.sendMessage(ChatColor.DARK_GREEN + "However, if they kill you, they will gain an extra life (up to 3). You only have 2 life, so be careful.");
         p.sendMessage(ChatColor.LIGHT_PURPLE + "Any hider who runs out of lives will become INFECTED.");
@@ -257,29 +261,35 @@ public class InfectionGame {
         p.sendMessage(ChatColor.GOLD + "Good luck!");
     }
 
-    public static void death(Player killed) {
+    public static void death(Player killed, Entity killer, String killerName) {
         int numberOfLivesLeft = InfectionGame.numberOfLives.get(killed.getUniqueId()) - 1;
-        Player killer = killed.getKiller();
         for (Player p : playersInGame) {
             if (p.equals(killed)) {
-                p.sendMessage(ChatColor.RED + "You were killed by " + ChatColor.GOLD + killer.getName());
+                p.sendMessage(ChatColor.RED + "You were killed by " + ChatColor.GOLD + killerName);
             } else if (p.equals(killer)) {
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killed.getName());
+                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killerName);
             } else {
-                p.sendMessage(ChatColor.RED + killed.getDisplayName() + ChatColor.DARK_PURPLE + " was killed by " + ChatColor.GOLD + killer.getDisplayName());
+                p.sendMessage(ChatColor.RED + killed.getDisplayName() + ChatColor.DARK_PURPLE + " was killed by " + ChatColor.GOLD + killerName);
             }
         }
         if (hiders.contains(killed.getUniqueId())) {
             if (numberOfLivesLeft == 0) {
+                if (hiders.size() == 1){
+                    endGame(ChatColor.DARK_BLUE + "All hiders eliminated. Infected win!!", true);
+                    return;
+                }
                 numberOfLivesLeft = 2;
                 new RespawnPlayerTask(killed, true, true, numberOfLivesLeft).runTaskAsynchronously(plugin);
-                numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             } else {
                 new RespawnPlayerTask(killed, false, false, numberOfLivesLeft).runTaskAsynchronously(plugin);
-                numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             }
+            numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
         } else {
             if (numberOfLivesLeft == 0) {
+                if (infected.size() == 1){
+                    endGame(ChatColor.GOLD + "All infected eliminated. Hiders win!!", true);
+                    return;
+                }
                 killed.setGameMode(GameMode.SPECTATOR);
                 killed.sendMessage(ChatColor.RED + "You ran out of lives and are now spectating.");
                 infected.remove(killed.getUniqueId());
@@ -288,47 +298,59 @@ public class InfectionGame {
                 InfectionGame.numberOfLives.replace(killed.getUniqueId(), numberOfLivesLeft);
             }
         }
+        if (killer instanceof Player && !killer.equals(killed)) {
         int damagerNumberOfLives;
-        if (killer != null) {
-            damagerNumberOfLives = numberOfLives.get(killer.getUniqueId());
-            if (hiders.contains(killer.getUniqueId())) {
-                if (damagerNumberOfLives < 3) {
-                    numberOfLives.replace(killer.getUniqueId(), damagerNumberOfLives + 1);
-                }
+        damagerNumberOfLives = numberOfLives.get(killer.getUniqueId());
+        if (hiders.contains(killer.getUniqueId())) {
+            if (damagerNumberOfLives < 3) {
+                numberOfLives.replace(killer.getUniqueId(), damagerNumberOfLives + 1);
+                killer.sendMessage(ChatColor.GOLD + "You now have " + (damagerNumberOfLives + 1) + " lives.");
             }
         }
-//        else if (damagerNumberOfLives < 2) {
+        else {
+            if (damagerNumberOfLives < 2) {
+                numberOfLives.replace(killer.getUniqueId(), 2);
+                killer.sendMessage(ChatColor.GOLD + "You now have 2 lives.");
+            }
+        }
+        }
+        //        else if (damagerNumberOfLives < 2) {
 //            numberOfLives.replace(damager.getUniqueId(), damagerNumberOfLives + 1);
 //        }
     }
 
 
-    public static boolean endGame(String reason) {
+    public static boolean endGame(String reason, boolean doFireworks) {
         if (!lobbyStage) {
             lobbyStage = true;
             infected.clear();
             hiders.clear();
             chosenRandom.clear();
             numberOfLives.clear();
+            BorderUtils.removeBorder("Game");
 
             for (Player p : playersInGame) {
                 p.sendMessage(reason);
                 p.setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard());
                 p.getInventory().clear();
                 p.teleport((Location) DataHelper.get("Infection Lobby Spawn Location"));
-                if (worldBorderEnabled) {
-                    BorderUtils.setBorder("Infection Lobby Border Range", "Infection Lobby World");
-                }
-                int numberOfMorePlayersNeeded = minNumberOfPlayers - playersInGame.size();
-                barCountdown = new LobbyBarCountdownTask(minNumberOfPlayers).runTaskAsynchronously(plugin);
+                BorderUtils.setBorder("Lobby");
                 if (DataHelper.checkBoolean("Allow Choice of Role")) {
                     ItemStack chooseRoleOpenInv = new ItemStack(Material.MAP, 1);
                     MetaHelper.setDisplayName(chooseRoleOpenInv, ChatColor.AQUA + "Choose your role in Infection!");
                     p.getInventory().addItem(chooseRoleOpenInv);
                 }
             }
-            new LaunchFirework(Bukkit.getWorld((String) DataHelper.get("Infection Spawn World")), DataHelper.getHashMap("Infection Border Range"),
-                    7, 1000, new Color[]{Color.RED, Color.BLUE}).runTaskAsynchronously(plugin);
+            if (doFireworks) {
+                if (DataHelper.checkBoolean("Infection Lobby Border")) {
+                    new LaunchFirework(Bukkit.getWorld((String) DataHelper.get("Infection Lobby World")), DataHelper.getHashMap("Infection Lobby Border Range"),
+                            7, 1000, new Color[]{Color.RED, Color.BLUE}).runTaskAsynchronously(plugin);
+                } else {
+                    new LaunchFirework((Location) DataHelper.get("Infection Lobby Spawn Location"),
+                            7, 1000, new Color[]{Color.RED, Color.BLUE}).runTaskAsynchronously(plugin);
+                }
+                new LobbyBarCountdownTask(minNumberOfPlayers).runTaskAsynchronously(plugin);
+            }
             return true;
         }
         return false;

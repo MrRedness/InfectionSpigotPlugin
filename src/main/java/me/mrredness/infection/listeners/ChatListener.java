@@ -1,5 +1,6 @@
 package me.mrredness.infection.listeners;
 
+import me.mrredness.infection.InfectionSetupData;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.utils.BorderUtils;
 import org.bukkit.ChatColor;
@@ -23,11 +24,15 @@ public class ChatListener implements Listener {
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
                     DataHelper.addAndSave("Infection Border Setup Complete", true);
                     p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
+                    InfectionSetupData.save();
+                    InfectionSetupData.reload();
                 } else if (m.equalsIgnoreCase("no") || m.equalsIgnoreCase("n")) {
                     DataHelper.addAndSave("Infection Physical Border", false);
                     PlayerInteractListener.readyForPlayerInputOnPhysicalBorder = false;
                     DataHelper.addAndSave("Infection Border Setup Complete", true);
                     p.sendMessage(ChatColor.GREEN + "Ok, border setup is complete! Test it using the setup menu.");
+                    InfectionSetupData.save();
+                    InfectionSetupData.reload();
                 } else {
                     p.sendMessage(ChatColor.RED + "Please use either yes or no.");
                 }
@@ -40,7 +45,7 @@ public class ChatListener implements Listener {
                 if (m.equalsIgnoreCase("yes") || m.equalsIgnoreCase("y")) {
                     DataHelper.addAndSave("Infection Lobby Border", true);
                     PlayerInteractListener.readyForPlayerInputOnLobbyBorder = false;
-                    DataHelper.addAndSave("Infection Lobby Setup Complete", true);
+                    PlayerInteractListener.readyForPlayerToSetLobbyBorder = true;
                     p.sendMessage("Ok. Now use your coordinate picker to left click on one of the corners of your lobby border.");
                 } else if (m.equalsIgnoreCase("no") || m.equalsIgnoreCase("n")) {
                     DataHelper.addAndSave("Infection Lobby Border", false);
@@ -59,7 +64,7 @@ public class ChatListener implements Listener {
             if (p.equals(ContainerListener.user)) {
                 if (m.equalsIgnoreCase("end") || m.equalsIgnoreCase("e")) {
                     ContainerListener.readyForPlayerInputOnDisablingTestBorder = false;
-                    BorderUtils.removeBorder("Infection Spawn Setup Complete", "Infection Spawn World");
+                    BorderUtils.removeBorder("Game");
                     p.sendMessage(ChatColor.GREEN + "Ok, border is down!");
                 }
 

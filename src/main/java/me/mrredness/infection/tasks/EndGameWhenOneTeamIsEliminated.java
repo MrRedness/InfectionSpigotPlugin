@@ -10,13 +10,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class EndGameWhenOneTeamIsEliminated extends BukkitRunnable {
     @Override
     public void run() {
-        while (!InfectionGame.isLobbyStage()) {
+    /*    while (!InfectionGame.isLobbyStage()) {
             if (InfectionGame.getHiders().isEmpty()) {
-                new EndGame(ChatColor.DARK_BLUE + "All hiders eliminated. Infected win!!").runTask(Bukkit.getPluginManager().getPlugin("Infection"));
+                new EndGame(ChatColor.DARK_BLUE + "All hiders eliminated. Infected win!!", true).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             } else if (InfectionGame.getInfected().isEmpty()) {
-                new EndGame(ChatColor.GOLD + "All infected eliminated. Hiders win!!").runTask(Bukkit.getPluginManager().getPlugin("Infection"));
+                new EndGame(ChatColor.GOLD + "All infected eliminated. Hiders win!!", true).runTask(Bukkit.getPluginManager().getPlugin("Infection"));
             }
             SleepUtils.one(); //just to save performance
-        }
+        } */
     }
 }

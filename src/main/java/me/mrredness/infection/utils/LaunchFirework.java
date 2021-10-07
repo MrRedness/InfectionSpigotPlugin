@@ -31,8 +31,7 @@ public class LaunchFirework extends BukkitRunnable {
         range = true;
     }
 
-    public LaunchFirework(World world, Location location, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors) {
-        this.world = world;
+    public LaunchFirework(Location location, int numberOfFireworks, int delayBetweenLaunchesInMilliseconds, Color[] colors) {
         this.location = location;
         this.numberOfFireworks = numberOfFireworks;
         this.delayBetweenLaunchesInMilliseconds = delayBetweenLaunchesInMilliseconds;
@@ -65,7 +64,7 @@ public class LaunchFirework extends BukkitRunnable {
         if (range) {
             launch(world, locationRange, numberOfFireworks, delayBetweenLaunchesInMilliseconds, colors);
         } else {
-            launch(world, location, numberOfFireworks, delayBetweenLaunchesInMilliseconds, colors);
+            launch(location.getWorld(), location, numberOfFireworks, delayBetweenLaunchesInMilliseconds, colors);
         }
     }
 }

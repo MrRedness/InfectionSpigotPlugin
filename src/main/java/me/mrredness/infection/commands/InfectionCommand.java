@@ -23,11 +23,9 @@ public class InfectionCommand implements CommandExecutor {
 
     private static boolean secondTimeRunningForceStart = false;
     private final Infection plugin;
-    private final boolean worldBorderEnabled;
 
-    public InfectionCommand(Infection plugin, boolean worldBorderEnabled) {
+    public InfectionCommand(Infection plugin) {
         this.plugin = plugin;
-        this.worldBorderEnabled = worldBorderEnabled;
     }
 
     public static void setSecondTimeRunningForceStart(boolean secondTimeRunningForceStart) {
@@ -59,7 +57,7 @@ public class InfectionCommand implements CommandExecutor {
                     } else if (!DataHelper.checkBoolean("Infection Lobby Setup Complete")) {
                         p.sendMessage(ChatColor.RED + "Please finish setting up the lobby using the 'Setup Lobby' item in the '/infection setup' menu.");
                     } else {
-                        InfectionGame.joinGame(p, worldBorderEnabled, plugin);
+                        InfectionGame.joinGame(p, plugin);
                     }
                     return true;
                 } else {
@@ -134,7 +132,7 @@ public class InfectionCommand implements CommandExecutor {
                 }
             } else if (args[0].equals("endgame")) {
                 if (p.hasPermission("infection.endGame")) {
-                    if (!InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.")) {
+                    if (!InfectionGame.endGame(ChatColor.DARK_PURPLE + "The game has been ended by a moderator.", false)) {
                         p.sendMessage(ChatColor.LIGHT_PURPLE + "Sorry, the game is not currently running.");
                     }
                     return true;

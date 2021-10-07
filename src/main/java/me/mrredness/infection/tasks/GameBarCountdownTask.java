@@ -19,6 +19,11 @@ public class GameBarCountdownTask extends BukkitRunnable {
 
     static BossBar countdownBar = Bukkit.createBossBar("Infection!", BarColor.YELLOW, BarStyle.SEGMENTED_10);
 
+    public static void removeBar() {
+        continueRunning = false;
+        countdownBar.removeAll();
+    }
+
     static boolean continueRunning = true;
 
 
@@ -27,19 +32,20 @@ public class GameBarCountdownTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        while (playersInGame.size() > 0 && continueRunning) {
+        playersInGame = InfectionGame.getPlayersInGame();
+        while (playersInGame.size() > 0 && continueRunning && !InfectionGame.isLobbyStage()) {
             playersInGame = InfectionGame.getPlayersInGame();
-            countdownBar.removeAll();
             double minutesLeft = (double) secondsLeft / 60;
+            countdownBar.removeAll();
             for (Player p : playersInGame) {
                 countdownBar.addPlayer(p);
             }
             if (minutesLeft > 1) {
-                countdownBar.setTitle(BarColor.YELLOW + "Time Left: " + BarColor.BLUE + (int) minutesLeft + " minutes!");
-                countdownBar.setProgress(minutesLeft);
+                countdownBar.setTitle("Time Left: " + (int) minutesLeft + " minutes!");
+                countdownBar.setProgress(minutesLeft / 10);
                 secondsLeft--;
             } else {
-                countdownBar.setTitle(BarColor.YELLOW + "Time Left: " + BarColor.BLUE + secondsLeft + " seconds.");
+                countdownBar.setTitle("Time Left: " + secondsLeft + " seconds.");
                 secondsLeft--;
                 if (secondsLeft == 0) {
                     continueRunning = false;
