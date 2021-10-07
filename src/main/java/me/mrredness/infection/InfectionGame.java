@@ -267,7 +267,7 @@ public class InfectionGame {
             if (p.equals(killed)) {
                 p.sendMessage(ChatColor.RED + "You were killed by " + ChatColor.GOLD + killerName);
             } else if (p.equals(killer)) {
-                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killerName);
+                p.sendMessage(ChatColor.LIGHT_PURPLE + "You killed " + ChatColor.GOLD + killed.getName());
             } else {
                 p.sendMessage(ChatColor.RED + killed.getDisplayName() + ChatColor.DARK_PURPLE + " was killed by " + ChatColor.GOLD + killerName);
             }
