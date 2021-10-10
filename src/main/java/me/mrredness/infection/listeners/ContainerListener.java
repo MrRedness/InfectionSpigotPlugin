@@ -3,9 +3,7 @@ package me.mrredness.infection.listeners;
 import me.mrredness.infection.InfectionGame;
 import me.mrredness.infection.helpers.DataHelper;
 import me.mrredness.infection.helpers.MetaHelper;
-import me.mrredness.infection.utils.BorderUtils;
-import me.mrredness.infection.utils.SleepUtils;
-import me.mrredness.infection.utils.TeleportUtils;
+import me.mrredness.infection.tasks.TestBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +25,16 @@ public class ContainerListener implements Listener {
     //      this.plugin = plugin;
     //  }
     static boolean readyForPlayerInputOnDisablingTestBorder = false;
+
+    public static void setReadyForPlayerInputOnDisablingTestBorder(boolean readyForPlayerInputOnDisablingTestBorder) {
+        ContainerListener.readyForPlayerInputOnDisablingTestBorder = readyForPlayerInputOnDisablingTestBorder;
+    }
+
     static Player user;
+
+    public static void setUser(Player user) {
+        ContainerListener.user = user;
+    }
 
     @EventHandler
     public void onMenuClick(InventoryClickEvent e) {
@@ -101,21 +108,7 @@ public class ContainerListener implements Listener {
                         if (range == null) {
                             p.sendMessage("Something went wrong. Try re-running the border setup.");
                         } else {
-                            for (int a = 0; a < 5; a++) {
-                                p.teleport(TeleportUtils.findSafeLocation(range));
-                                SleepUtils.three();
-                            }
-                            if (DataHelper.checkBoolean("Infection Physical Border")) {
-                                p.sendMessage(ChatColor.GOLD + "The plugin will now attempt to setup a physical border around the coordinates you set. If you do not want this, please redo border setup and choose \"No\" when asked about wanting a physical border.");
-                                if (Bukkit.getServer().getPluginManager().isPluginEnabled("WorldBorder")) {
-                                    BorderUtils.setBorder("Game");
-                                    p.sendMessage(ChatColor.GOLD + "The border should now be setup. Walk around and make sure it is working. When you are done, type \"end\" in chat to disable the border.");
-                                    user = p;
-                                    readyForPlayerInputOnDisablingTestBorder = true;
-                                } else {
-                                    p.sendMessage(ChatColor.RED + "It seems the plugin \"World Border 1.15+\" is not installed. This plugin is optional for the core functionalities of Infection, but is required for the physical border. If you would like to disable the physical border, re-do the border setup. Otherwise, install \"World Border 1.15+\" from spigot.org.");
-                                }
-                            }
+                            new TestBorder(p, range).runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("Infection"));
                         }
                     }
                 } else if (MetaHelper.checkDisplayName(i, ChatColor.AQUA + "Setup Lobby")) {
